@@ -5,11 +5,13 @@ noam.kimhi,or_forshmit8
 
 # QUESTION 1 - Description of every class in our program and the relationships between them:
 Classes:
-(*)
+(*) SubImgCharMatcher: This class is responsible for matching an ASCII character to a sub-image with a given
+                       brightness.
 TODO: Add description for SubImgCharMatcher
 
 Relationships:
-(*)
+(*) SubImgCharMatcher is a part of the ASCII-art algorithm logic, dividing a full-size picture to sub-images
+    and assigning each of them a character that represent them according to their brightness.
 
 ----------
 
