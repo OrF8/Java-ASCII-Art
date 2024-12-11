@@ -6,6 +6,7 @@ noam.kimhi,or_forshmit8
 # QUESTION 1 - Description of every class in our program and the relationships between them:
 Classes:
 (*)
+TODO: Add description for SubImgCharMatcher
 
 Relationships:
 (*)
@@ -25,7 +26,7 @@ TODO: Don't forget to mention time and space complexity in our answer!
                is far less important). Space-complexity wise, a HashMap is also ideal for this situation, and
                will store our data on O(n) space (where n is the number of characters). In this case there
                were no differences between a TreeMap and a HashMap.
-               TODO: Where did we use this ASCII character set?a
+               TODO: Where did we use this ASCII character set?
 
 ----------
 
