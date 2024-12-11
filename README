@@ -14,7 +14,18 @@ Relationships:
 
 # QUESTION 2 - Details about every Java data structure we used in our code, and the reasons behind the choice:
 TODO: Don't forget to mention time and space complexity in our answer!
-(*)
+(*) Part 1.1 - ASCII Character set: We decided to use a HashMap to store the brightness value of each
+               character. The options we had were either a HashMap or a TreeMap due to the need to print the
+               characters in their ASCII order. However, the frequency of this operation is negligible and
+               will only be requested upon a user's request, while the need to get/set the brightness value
+               of a character will be in a greater demand throughout the ASCII-Art generating process. A Hash-
+               Map enables access to the brightness value of each character in constant time (amortized).
+               On the other hand, a TreeMap is not Hash-based, therefor accessing the brightness values will
+               be on O(log n) time, and will only make sorting the keys more efficient (which as we explained,
+               is far less important). Space-complexity wise, a HashMap is also ideal for this situation, and
+               will store our data on O(n) space (where n is the number of characters). In this case there
+               were no differences between a TreeMap and a HashMap.
+               TODO: Where did we use this ASCII character set?
 
 ----------
 
