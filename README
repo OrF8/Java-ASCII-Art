@@ -1,0 +1,34 @@
+noam.kimhi,or_forshmit8
+322678947,327795464
+
+----------
+
+# QUESTION 1 - Description of every class in our program and the relationships between them:
+Classes:
+(*)
+
+Relationships:
+(*)
+
+----------
+
+# QUESTION 2 - Details about every Java data structure we used in our code, and the reasons behind the choice:
+TODO: Don't forget to mention time and space complexity in our answer!
+(*)
+
+----------
+
+# QUESTION 3 - Usage of Java Exception mechanism in order to take care of invalid user input and printing
+error messages:
+(*)
+
+----------
+
+# QUESTION 4 - API changes to the the class SubImgCharMatcher:
+TODO: Write none if we did not change the class
+(*)
+----------
+
+# Question 5 - API changes to the classes that we were given:
+TODO: Write none if we did not change the class
+(*)
