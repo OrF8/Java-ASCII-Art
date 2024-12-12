@@ -8,13 +8,14 @@ import java.util.HashMap;
  */
 public class SubImgCharMatcher {
 
-    private HashMap<Character, Double> charSet;
+    private final HashMap<Character, Double> charSet;
 
     /**
      * Constructor for the SubImgCharMatcher class.
      * @param charset The set of characters to be matched with sub-images.
      */
     public SubImgCharMatcher(char[] charset) {
+        this.charSet = new HashMap<>();
         for (char ch : charset) {
             // Initialize the character set with null brightness values.
             this.charSet.put(ch, null);
