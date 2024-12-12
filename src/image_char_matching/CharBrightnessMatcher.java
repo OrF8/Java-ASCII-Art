@@ -26,11 +26,10 @@ class CharBrightnessMatcher {
 
     /**
      * Match a given character with its brightness.
-     *
      * @param c The character to match brightness to.
      * @return The brightness of the character.
      */
-    static double matchBrightness(char c) {
+     /* TODO: Think of access modifier */ static double matchBrightness(char c) {
         boolean[][] convertedChar = CharConverter.convertToBoolArray(c);
         int numTrue = countTrue(convertedChar);
         /*
@@ -46,7 +45,7 @@ class CharBrightnessMatcher {
      *
      * @param charSet The character set.
      */
-    static void normalizeBrightness(HashMap<Character, Double> charSet) {
+    /* TODO: Think of access modifier */ static void normalizeBrightness(HashMap<Character, Double> charSet) {
         // Calculate the min and max brightness values in the given set.
         double maxBrightness = Double.MIN_VALUE;
         double minBrightness = Double.MAX_VALUE;
