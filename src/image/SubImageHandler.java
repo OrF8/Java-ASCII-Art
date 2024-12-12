@@ -25,32 +25,31 @@ public class SubImageHandler {
      */
     public static Image[][] divideImage(Image image, int resolution) {
         int imageHeight = image.getHeight();
+        int imageWidth = image.getWidth();
         /*
          There are (resolution) images in a row, and since each one is a square,
          we need (image.getHeight() / resolution) rows.
          */
-        int numRows = imageHeight / resolution;
-        int numCols = image.getWidth() / resolution;
+        int subImageDims = imageWidth/ resolution;
 
-        int z = imageHeight / (image.getWidth() / resolution);
-        Image[][] subImages = new Image[z][resolution];
+        int subImageRowCount = imageHeight / (imageWidth / resolution);
+        Image[][] subImages = new Image[subImageRowCount][resolution];
 
-        for (int row = 0; row < z; row++) {
+        for (int row = 0; row < subImageRowCount; row++) {
             for (int col = 0; col < resolution; col++) {
-
-                Color[][] subPixelArray = new Color[numRows][numCols];
+                Color[][] subPixelArray = new Color[subImageDims][subImageDims];
 
                 // Iterate resolution² times to create sub-images of size resolution²
-                for (int i = 0; i < numRows; i++) {
-                    for (int j = 0; j < numCols; j++) {
+                for (int i = 0; i < subImageDims; i++) {
+                    for (int j = 0; j < subImageDims; j++) {
                         // Calculate the desired pixel based on our current row and column
-                        int x = row * numRows + j;
-                        int y = col * numCols + i;
+                        int x = row * subImageDims + j;
+                        int y = col * subImageDims + i;
                         subPixelArray[i][j] = image.getPixel(x, y);
                     }
                 }
 
-                subImages[row][col] = new Image(subPixelArray, numRows, numCols);
+                subImages[row][col] = new Image(subPixelArray, subImageDims, subImageDims);
             }
         }
 
