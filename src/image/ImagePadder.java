@@ -13,6 +13,9 @@ public class ImagePadder {
     private static final int TWO_TO_THE_POWER_OF_3 = 8;
     private static final int TWO_TO_THE_POWER_OF_4 = 16;
 
+    /**
+     * A private constructor to prevent instantiation of this class.
+     */
     private ImagePadder() {
         // This class should not be instantiated.
     }
@@ -60,16 +63,16 @@ public class ImagePadder {
         for (int i = 0; i < heightAfterPadding; i++) {
             for (int j = 0; j < widthAfterPadding; j++) {
                 // If the current pixel is outside the original image, set it to white.
-                if (i < heightDiff / 2 || j < widthDiff / 2) {
+                if (i < heightDiff / 2) {
                     paddedImage[i][j] = Color.WHITE;
-                } else if (i > imageHeight + (heightDiff / 2) || j > imageWidth + (widthDiff / 2)) {
+                } else if (j < widthDiff / 2) {
                     paddedImage[i][j] = Color.WHITE;
-                } else { // heightDiff / 2 <= i <= imageHeight + (heightDiff / 2)
-                    if (i < heightDiff / 2 || j < widthDiff / 2 || i >= imageHeight + (heightDiff / 2) || j >= imageWidth + (widthDiff / 2)) {
+                } else if (i >= imageHeight + (heightDiff / 2)){
+                    paddedImage[i][j] = Color.WHITE;
+                } else if (j >= imageWidth + (widthDiff / 2)) {
                         paddedImage[i][j] = Color.WHITE;
-                    } else {
-                        paddedImage[i][j] = image.getPixel(i - (heightDiff / 2), j - (widthDiff / 2));
-                    }
+                } else {
+                    paddedImage[i][j] = image.getPixel(i - (heightDiff / 2), j - (widthDiff / 2));
                 }
             }
         }
