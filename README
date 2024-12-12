@@ -5,85 +5,90 @@ noam.kimhi,or_forshmit8
 
 # QUESTION 1 - Description of every class in our program and the relationships between them:
 Package image_char_matching:
-(*) CharConverter: This class was given to us. No changes were made here.
-(*) SubImgCharMatcher: This class is responsible for matching an ASCII character to a sub-image with a given
-                       brightness. It receives an array of characters and assigns each of them a brightness
-                       value. According to user's request, it will return a char matching the given brightness
-                       value.
-                       This class behaves efficiently upon adding/removing chars. It will only normalize the
-                       entire character set if the added/removed character changes the minimum/maximum
-                       brightness value.
+    (*) CharConverter: This class was given to us. No changes were made here.
+    (*) SubImgCharMatcher: This class is responsible for matching an ASCII character to a sub-image with a
+                           given brightness. It receives an array of characters and assigns each of them a
+                           brightness value. According to user's request, it will return a char matching the
+                           given brightness value. This class behaves efficiently upon adding/removing chars.
+                           It will only normalize the entire character set if the added/removed character
+                           changes the minimum/maximum brightness value.
 
 Package image:
-(*) Image: This class was given to us. No changes were made here.
-(*) ImagePadder: This is a utility class responsible for padding a given image with white borders s.t its
-                 Dimensions will be powers of 2. Since this is a utility class and has no fields, all of its
-                 methods are static. Assumes the given image has an even width and height (as stated in the
-                 exercise description).
-(*) SubImageHandler: A utility class handling the dividing of an image and calculating brightness values.
-                     Sub-image division - Given an image and a resolution, this class os responsible for
-                     dividing a given image to an array of square sub-images, each of them the size of
-                     resolution².
-                     Brightness value - Given an image, calculate its brightness value.
+    (*) Image: This class was given to us. No changes were made here.
+    (*) ImagePadder: This is a utility class responsible for padding a given image with white borders s.t its
+                     Dimensions will be powers of 2. Since this is a utility class it has no fields, and all
+                     of its methods are static.
+                     Assumes the given image has an even width and height (as stated in the exercise
+                     description).
+    (*) SubImageHandler: A utility class handling the dividing of an image and calculating brightness values.
+                         Sub-image division - Given an image and a resolution, this class is responsible for
+                         dividing a given image to an array of square sub-images, each of them the size of
+                         resolution².
+                         Brightness value - Given an image, calculate its brightness value.
 
 Package ascii_art:
-(*) KeyboardInput: This class was given to us. No changes were made here.
-(*) AsciiArtAlgorithm: The main algorithm that runs the entire process. This class has an efficiency mechanism
-                       that allows future runs of the algorithm to take less time with less calls to
-                       unnecessary methods. We are saving the following static fields and behave accordingly:
-                       - CharacterSet: We only update the characters that were not calculated in the previous
-                                       run, using the efficient methods of SubImgCharMatcher.
-                       - ImagePath: If the image path has not changed, there's no need to pad it again, hence
-                                    we save the previous padded image since we decided space complexity of
-                                    saving the image matters less than the run time of the algorithm.
-                       - Resolution: If the image hasn't changed but the resolution did, we can use the padded
-                                     image and only create the sub-images again. if both the resolution and
-                                     the image haven't changed, we save the previous subImages and only assign
-                                     each sub-image the matching ASCII character.
+    (*) KeyboardInput: This class was given to us. No changes were made here.
+    (*) AsciiArtAlgorithm: The main algorithm that runs the entire process.
+                           This class has an efficiency mechanism that allows future runs of the algorithm to
+                           take less time with less calls to unnecessary methods.
+                           We are saving the following static fields and behave accordingly:
+                           - CharacterSet: We only update the characters that were not calculated in the
+                                           previous run, using the efficient methods of SubImgCharMatcher.
+                           - ImagePath: If the image path has not changed, there's no need to pad it again,
+                                        hence we save the previous padded image since we decided space
+                                        complexity of saving the padded image matters less than the run time
+                                        of the algorithm.
+                           - Resolution: If the image hasn't changed but the resolution did, we can use the
+                                         padded image and only create the sub-images again.
+                                         if both the resolution and the image haven't changed,
+                                         we save the previous subImages' brightness values and only assign
+                                         each sub-image the matching ASCII character.
 
 TODO: work on explaining relationships
 Relationships between classes:
-(*) SubImgCharMatcher is a part of the ASCII-art algorithm logic, dividing a full-size picture to sub-images
-    and assigning each of them a character that represent them according to their brightness. This method
-    has 2 efficient methods - addChar() and removeChar() which allows the algorithm to efficiently update
-    the character set according to the previous run.
+    (*) SubImgCharMatcher is a part of the ASCII-art algorithm logic, dividing a full-size picture to
+        sub-images and assigning each of them a character that represent them according to their brightness.
+        This method has 2 efficient methods - addChar() and removeChar() which allows the algorithm to
+        efficiently update the character set according to the previous run.
 
-----------
+--------------------------------------------------------------------------------------------------------------
 
 # QUESTION 2 - Details about every Java data structure we used in our code, and the reasons behind the choice:
-TODO: Don't forget to mention time and space complexity in our answer!
-(*) Part 1.1 - ASCII Character set: We decided to use a HashMap to store the brightness value of each
-               character. The options we had were either a HashMap or a TreeMap due to the need to print the
-               characters in their ASCII order. However, the frequency of this operation is negligible and
-               will only be requested upon a user's request, while the need to get/set the brightness value
-               of a character will be in a greater demand throughout the ASCII-Art generating process. A Hash-
-               Map enables access to the brightness value of each character in constant time (amortized).
-               On the other hand, a TreeMap is not Hash-based, therefor accessing the brightness values will
-               be on O(log n) time, and will only make sorting the keys more efficient (which as we explained,
-               is far less important). Space-complexity wise, a HashMap is also ideal for this situation, and
-               will store our data on O(n) space (where n is the number of characters). In this case there
-               were no differences between a TreeMap and a HashMap.
-               TODO: Where did we use this ASCII character set?
-(*) Part 1.5 - Previous character set - Inside AsciiArtAlgorithm, we save the previous set of characters in an
-               HashSet in order to check membership in constant time (amortized) in a new run of the algorithm
-               if a character's brightness value was already calculated in the previous run. In cooperation
-               with the removeChar() and addChar() methods we have in SubImgCharMatcher that also work
-               efficiently (explained in Q1), this allows new runs of the algorithm to update only the added
-               values with minimum run-time.
+    TODO: Don't forget to mention time and space complexity in our answer!
+    (*) Part 1.1 - ASCII Character set: We decided to use a HashMap to store the brightness value of each
+                   character. The options we had were either a HashMap or a TreeMap due to the need to print
+                   the characters in their ASCII order. However, the frequency of this operation is negligible
+                   and will only be requested upon a user's request, while the need to get/set the brightness
+                   value of a character will be in a greater demand throughout the ASCII-Art generating
+                   process. A Hash-Map enables access to the brightness value of each character in constant
+                   time (amortized). On the other hand, a TreeMap is not Hash-based, therefor accessing the
+                   brightness values will be on O(log n) time, and will only make sorting the keys more
+                   efficient (which as we explained, is far less important). Space-complexity wise, a HashMap
+                   is also ideal for this situation, and will store our data on O(n) space (where n is the
+                   number of characters).
+                   In this case there were no differences between a TreeMap and a HashMap.
+                   TODO: Where did we use this ASCII character set?
 
-----------
+    (*) Part 1.5 - Previous character set - Inside AsciiArtAlgorithm, we save the previous set of characters
+                   in a HashSet in order to check membership in constant time (amortized) in a new run of the
+                   algorithm if a character's brightness value was already calculated in the previous run.
+                   In cooperation with the removeChar() and addChar() methods we have in SubImgCharMatcher
+                   that also work efficiently (explained in Q1), this allows new runs of the algorithm to
+                   update only the added values with minimum run-time.
+
+--------------------------------------------------------------------------------------------------------------
 
 # QUESTION 3 - Usage of Java Exception mechanism in order to take care of invalid user input and printing
 error messages:
-(*)
+    (*)
 
-----------
+--------------------------------------------------------------------------------------------------------------
 
 # QUESTION 4 - API changes to the the class SubImgCharMatcher:
-TODO: Write none if we did not change the class
-(*)
-----------
+    TODO: Write none if we did not change the class
+    (*)
+--------------------------------------------------------------------------------------------------------------
 
 # Question 5 - API changes to the classes that we were given:
-TODO: Write none if we did not change the class
-(*)
+    TODO: Write none if we did not change the class
+    (*)
