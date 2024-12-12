@@ -2,6 +2,10 @@ package image_char_matching;
 
 import java.util.HashMap;
 
+/**
+ * Responsible for matching brightness value to a single character
+ * and normalizing it with relation to a character set.
+ */
 class CharBrightnessMatcher {
 
     private static final int NUM_OF_PIXELS_IN_CONVERTED_CHARACTER = 16 * 16;
