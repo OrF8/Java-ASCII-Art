@@ -41,8 +41,8 @@ public class SubImgCharMatcher {
                 closestChar = ch;
             } else if (diff == minDiff) {
                 /*
-                 * If there are multiple characters with the same brightness,
-                 * the character with the smallest ASCII value is returned.
+                 If there are multiple characters with the same brightness,
+                 the character with the smallest ASCII value is returned.
                  */
                 closestChar = (ch < closestChar) ? ch : closestChar;
             }
