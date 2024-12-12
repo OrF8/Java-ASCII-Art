@@ -7,7 +7,7 @@ noam.kimhi,or_forshmit8
 Classes:
 (*) SubImgCharMatcher: This class is responsible for matching an ASCII character to a sub-image with a given
                        brightness.
-TODO: Add description for SubImgCharMatcher
+    TODO: Add description for CharBrightnessMatcher after deciding if its a nested class or not.
 
 Relationships:
 (*) SubImgCharMatcher is a part of the ASCII-art algorithm logic, dividing a full-size picture to sub-images
