@@ -69,9 +69,9 @@ public class Shell {
     private static final String CHANGE_OUTPUT_METHOD = "change output method";
 
     // "round" shell command constants
-    private static final String ROUND_UP_FORMAT = "up";
-    private static final String ROUND_DOWN_FORMAT = "down";
-    private static final String ROUND_ABS_VALUE_FORMAT = "abs";
+    static final String ROUND_UP_FORMAT = "up";
+    static final String ROUND_DOWN_FORMAT = "down";
+    static final String ROUND_ABS_VALUE_FORMAT = "abs";
 
     // incorrect format or command requests
     private static final String INCORRECT_FORMAT = "incorrect format";
@@ -113,33 +113,6 @@ public class Shell {
          * @param value The value of the enum.
          */
         OutputMethod(String value) {
-            this.value = value;
-        }
-
-        /**
-         * Getter method to retrieve the value.
-         * @return The value of the enum.
-         */
-        public String getValue() {
-            return value;
-        }
-    }
-
-    /**
-     * An enum to represent the rounding method of the algorithm.
-     */
-    private enum RoundMethod {
-        UP(ROUND_UP_FORMAT),
-        DOWN(ROUND_DOWN_FORMAT),
-        ABSOLUTE(ROUND_ABS_VALUE_FORMAT);
-
-        private final String value;
-
-        /**
-         * Constructor
-         * @param value The value of the enum.
-         */
-        RoundMethod(String value) {
             this.value = value;
         }
 
@@ -287,7 +260,7 @@ public class Shell {
      * @param c The value of the character to check.
      * @return <code>true</code> if the character is in ASCII range, <code>false</code> otherwise.
      */
-    private boolean isInAsciiTable(char c) {
+    private static boolean isInAsciiTable(char c) {
         return c >= FIRST_ASCII_CHARACTER && c <= LAST_ASCII_CHARACTER;
     }
 
@@ -378,32 +351,12 @@ public class Shell {
      */
     private void runAsciiArtAlgorithm(String imageName) throws IOException {
         if (this.characterSet.size() >= SUFFICIENT_CHAR_SET_SIZE){
-            AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(imageName, this.characterSet, this.resolution);
+            AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(imageName, this.characterSet,
+                                                                        this.resolution, this.roundMethod);
             char[][] output = asciiArtAlgorithm.run(); // Run the algorithm.
-            userOutput.out(output); //  Display output according to current format.
+            this.userOutput.out(output); //  Display output according to current format.
         } else {
             throw new CustomShellException(INSUFFICIENT_CHARACTER_SET_SIZE);
-        }
-    }
-
-    /**
-     * The main loop of the shell.
-     * @param imageName The path to the image to run the algorithm on.
-     * @throws IOException In case of invalid image path.
-     */
-    private void performShellSession(String imageName) throws IOException {
-        String input = "";
-        while (!input.equals(EXIT_INPUT)) {
-            try {
-                System.out.print(WAIT_FOR_USER_INPUT);
-                input = KeyboardInput.readLine();
-
-                String[] args = input.split(" "); // parse the command from the user
-
-                inputSwitcher(args, imageName); // handle the user's request according to the command
-            } catch (CustomShellException e) { // Catch exceptions that occurred due to invalid commands
-                System.out.println(e.getMessage());
-            }
         }
     }
 
@@ -451,6 +404,26 @@ public class Shell {
         }
     }
 
+    /**
+     * The main loop of the shell.
+     * @param imageName The path to the image to run the algorithm on.
+     * @throws IOException In case of invalid image path.
+     */
+    private void performShellSession(String imageName) throws IOException {
+        String input = "";
+        while (!input.equals(EXIT_INPUT)) {
+            try {
+                System.out.print(WAIT_FOR_USER_INPUT);
+                input = KeyboardInput.readLine();
+
+                String[] args = input.split(" "); // parse the command from the user
+
+                inputSwitcher(args, imageName); // handle the user's request according to the command
+            } catch (CustomShellException e) { // Catch exceptions that occurred due to invalid commands
+                System.out.println(e.getMessage());
+            }
+        }
+    }
 
     /**
      * Responsible for translating the commands given from the user and execute them.
