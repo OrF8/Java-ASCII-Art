@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * A utility class that handles all sub-images related functions.
  */
-public class SubImageHandler {
+public final class SubImageHandler {
 
     private static final float RED_TO_GREY_FACTOR = 0.2126f;
     private static final float GREEN_TO_GREY_FACTOR = 0.7152f;
@@ -15,9 +15,7 @@ public class SubImageHandler {
     /**
      * Private constructor to prevent instantiation.
      */
-    private SubImageHandler() {
-        // This class should not be instantiated.
-    }
+    private SubImageHandler() {}
 
     /**
      * Divides an image into sub-images of size resolution².

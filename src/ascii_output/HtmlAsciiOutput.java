@@ -16,6 +16,11 @@ public class HtmlAsciiOutput implements AsciiOutput {
     private final String fontName;
     private final String filename;
 
+    /**
+     * Create a new HtmlAsciiOutput instance.
+     * @param filename The name of the file to write to.
+     * @param fontName The name of the font to use.
+     */
     public HtmlAsciiOutput(String filename, String fontName) {
         this.fontName = fontName;
         this.filename = filename;
@@ -25,18 +30,20 @@ public class HtmlAsciiOutput implements AsciiOutput {
     public void out(char[][] chars) {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             writer.write(String.format(
-                "<!DOCTYPE html>\n"+
-                "<html>\n"+
-                "<body style=\""+
-                    "\tCOLOR:#000000;"+
-                    "\tTEXT-ALIGN:center;"+
-                    "\tFONT-SIZE:1px;\">\n"+
-                "<p style=\""+
-                    "\twhite-space:pre;"+
-                    "\tFONT-FAMILY:%s;"+
-                    "\tFONT-SIZE:%frem;"+
-                    "\tLETTER-SPACING:0.15em;"+
-                    "\tLINE-HEIGHT:%fem;\">\n",
+                    """
+                            <!DOCTYPE html>
+                            <html>
+                            <body style="\
+                            \tCOLOR:#000000;\
+                            \tTEXT-ALIGN:center;\
+                            \tFONT-SIZE:1px;">
+                            <p style="\
+                            \twhite-space:pre;\
+                            \tFONT-FAMILY:%s;\
+                            \tFONT-SIZE:%frem;\
+                            \tLETTER-SPACING:0.15em;\
+                            \tLINE-HEIGHT:%fem;">
+                            """,
                     fontName, BASE_FONT_SIZE/chars[0].length, BASE_LINE_SPACING));
 
             for(int y = 0 ; y < chars.length ; y++) {
