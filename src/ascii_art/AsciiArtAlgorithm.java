@@ -155,7 +155,7 @@ public class AsciiArtAlgorithm {
      * Runs the ASCII-ART algorithm.
      * @return A 2D <code>char</code> array where each entry represents
      * a character that matches the brightness value of the entry in the original imagePath.
-     * @throws IOException in case the image path is invalid.
+     * @throws IOException In case the image path is invalid.
      */
     public char[][] run() throws IOException {
         char[][] asciiOutput;

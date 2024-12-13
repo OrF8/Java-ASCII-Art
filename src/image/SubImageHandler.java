@@ -12,16 +12,18 @@ public class SubImageHandler {
     private static final float BLUE_TO_GREY_FACTOR = 0.0722f;
     private static final int MAX_RGB_VALUE = 255;
 
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private SubImageHandler() {
         // This class should not be instantiated.
     }
 
     /**
-     * TODO: Go over this again
-     * Divides a given image to sub-images of size resolution²
-     * @param image The image.
-     * @param resolution The resolution.
-     * @return An ArrayList with all the sub-images of size resolution²
+     * Divides an image into sub-images of size resolution².
+     * @param image The image to divide.
+     * @param resolution The resolution of the sub-images.
+     * @return A 2D array of sub-images.
      */
     public static Image[][] divideImage(Image image, int resolution) {
         int imageHeight = image.getHeight();

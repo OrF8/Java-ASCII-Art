@@ -19,9 +19,8 @@ public class ImagePadder {
     }
 
 
-
     /**
-     * Pads the given image s.t its dimensions will be powers of 2.
+     * Pads the given image with white pixels such that its dimensions will be powers of 2.
      * @param image The image to pad.
      * @return The padded image.
      */
