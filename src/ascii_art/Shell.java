@@ -1,6 +1,8 @@
 package ascii_art;
 
 import exceptions.CharacterSetException;
+import exceptions.ResolutionException;
+import image.Image;
 
 import java.io.IOException;
 import java.util.*;
@@ -38,7 +40,9 @@ public class Shell {
     // Default values constants
     private static final String HTML_OUTPUT_FONT = "Courier New";
     private static final int DEFAULT_RESOLUTION_VALUE = 2;
-    private static final Character[] DEFAULT_CHARACTER_SET = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    private static final Character[] DEFAULT_CHARACTER_SET = {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+    };
 
 
     // ASCII values
@@ -52,7 +56,16 @@ public class Shell {
     private static final String REMOVE_ALL_ASCII_REQUEST = ADD_ALL_ASCII_REQUEST;
     private static final String HYPHEN_SEPARATOR = "-";
     private static final int VALID_RANGE_STRING_LENGTH = 2;
-    private static final int SECOND_CHAR = 2;
+
+    // "res" shell command constants
+    private static final String REQUESTED_RESOLUTION_OUT_OF_BOUNDS = "Did not change resolution due " +
+                                                                     "to exceeding boundaries.";
+    private static final int RESOLUTION_CHANGE_FACTOR = 2;
+    private static final String RESOLUTION_INVALID_FORMAT = "Did not change resolution " +
+                                                            "due to incorrect format.";
+    private static final String INCREASE_RES_REQUEST = "up";
+    private static final String DECREASE_RES_REQUEST = "down";
+    private static final String RESOLUTION_SET_MESSAGE = "Resolution set to %d.";
 
 
     // private fields
@@ -60,6 +73,8 @@ public class Shell {
     private int resolution;
     private OutputMethod outputMethod;
     private RoundMethod roundMethod;
+    private int minCharsInRow;
+    private int imageWidth;
 
     /**
      * An enum to represent the output method of the algorithm.
@@ -193,7 +208,6 @@ public class Shell {
     private void removeCharsFromList(String argument) throws CharacterSetException {
         // TODO: What to do if user asks to remove a char that isn't in ASCII range? Throw Excpetion?
         // Create a new exception to throw in case of an invalid input.
-        CharacterSetException characterSetException = new CharacterSetException(REMOVE_CHARS_FROM_LIST);
 
         if (argument.equals(SPACE_ADDITION_REQUEST)) { // Remove space from the character set
             this.characterSet.remove(SPACE_ASCII_CODE);
@@ -206,7 +220,7 @@ public class Shell {
         } else if (argument.contains(HYPHEN_SEPARATOR)) { // Given range of characters to remove from the set.
             commandCharactersInRange(argument.split(HYPHEN_SEPARATOR), REMOVE_CHARS_FROM_LIST);
         } else {
-            throw characterSetException;
+            throw new CharacterSetException(REMOVE_CHARS_FROM_LIST);
         }
     }
 
@@ -261,6 +275,39 @@ public class Shell {
         }
     }
 
+    /**
+     * Changes the resolution of the output picture.
+     * <p>Has the following set of commands:</p>
+     * <li>res up: Multiply the current resolution by 2.</li>
+     * <li>res down: Divide the current resolution by 2.</li>
+     * <pre>Default resolution is set to 2, cannot exceed certain boundaries.</pre>
+     * @param argument User's request.
+     * @throws ResolutionException The requested resolution change exceeds upper/lower bounds.
+     */
+    private void changeOutputResolution(String argument) throws ResolutionException {
+        ResolutionException resolutionBoundException = new ResolutionException(
+                REQUESTED_RESOLUTION_OUT_OF_BOUNDS
+        );
+        if (argument.equals(INCREASE_RES_REQUEST)) {
+            if (this.resolution * RESOLUTION_CHANGE_FACTOR <= this.imageWidth) {
+                this.resolution *= RESOLUTION_CHANGE_FACTOR;
+                System.out.printf((RESOLUTION_SET_MESSAGE) + "%n", this.resolution);
+            } else {
+                throw resolutionBoundException;
+            }
+        } else if (argument.equals(DECREASE_RES_REQUEST)) {
+            if (this.resolution / RESOLUTION_CHANGE_FACTOR >= this.minCharsInRow) {
+                this.resolution /= RESOLUTION_CHANGE_FACTOR;
+                System.out.printf((RESOLUTION_SET_MESSAGE) + "%n", this.resolution);
+            } else {
+                throw resolutionBoundException;
+            }
+        } else {
+            throw new ResolutionException(RESOLUTION_INVALID_FORMAT);
+        }
+
+    }
+
 
     /**
      * Responsible for translating the commands given from the user and execute them.
@@ -278,28 +325,45 @@ public class Shell {
      */
     public void run(String imageName) {
         try {
+            Image image = new Image(imageName);
+            this.imageWidth = image.getWidth();
+            this.minCharsInRow = Math.max(1, this.imageWidth / image.getHeight());
+
             String input = "";
             while (!input.equals(EXIT_INPUT)) {
-                System.out.print(WAIT_FOR_USER_INPUT);
-                input = KeyboardInput.readLine();
-                // parse the command from the user
-                String[] args = input.split(" ");
-                String command = args[0];
+                try {
+                    System.out.print(WAIT_FOR_USER_INPUT);
+                    input = KeyboardInput.readLine();
+                    // parse the command from the user
+                    String[] args = input.split(" ");
+                    String command = args[0];
 
-                // handle the user's request according to the command
-                switch (command) {
-                    case PRINT_CHARS_LIST_INPUT:
-                        printCharList();
-                        break;
-                    case ADD_CHARS_TO_LIST:
-                        addCharsToList(args[1]);
-                        break;
-                    case REMOVE_CHARS_FROM_LIST:
-                        removeCharsFromList(args[1]);
-                        break;
-//                    case CHANGE_RESOLUTION:
-//                        changeOutputResolution(args[1]);
-//                        break;
+                    // handle the user's request according to the command
+                    switch (command) {
+                        case PRINT_CHARS_LIST_INPUT:
+                            printCharList();
+                            break;
+                        case ADD_CHARS_TO_LIST:
+                            if (args.length >= 2) {
+                                addCharsToList(args[1]);
+                            } else { // User did not specify what to add to the set
+                                throw new CharacterSetException(command);
+                            }
+                            break;
+                        case REMOVE_CHARS_FROM_LIST:
+                            if (args.length >= 2) {
+                                removeCharsFromList(args[1]);
+                            } else { // User did not specify what to remove from the set
+                                throw new CharacterSetException(command);
+                            }
+                            break;
+                        case CHANGE_RESOLUTION:
+                            if (args.length >= 2) { // User wants a specific operation on the resolution.
+                                changeOutputResolution(args[1]);
+                            } else { // User wants to print current resolution.
+                                System.out.printf((RESOLUTION_SET_MESSAGE) + "%n", this.resolution);
+                            }
+                            break;
 //                    case ROUND_METHOD:
 //                        changeRoundMethod(args[1]);
 //                        break;
@@ -307,13 +371,18 @@ public class Shell {
 //                        changeOutputFormat(args[1]);
 //                    case RUN_ALGORITHM:
 
+                    }
+                } catch (CharacterSetException | ResolutionException e) {
+                    System.out.println(e.getMessage());
                 }
             }
         } catch (IOException e) {
+            // TODO: How to handle invalid image path?
             System.out.println(e.getMessage());
         }
-
     }
+
+
 
     /**
      * Main method to run the shell.
@@ -323,7 +392,7 @@ public class Shell {
      */
     public static void main(String[] args) {
         Shell newShellSession = new Shell();
-        newShellSession.run("or_is_gay");
+        newShellSession.run("C:\\Users\\noamk\\OneDrive - huji.ac.il\\University\\2nd Year\\Object Oriented Programming\\Ex3\\ASCII-Art\\examples\\cat.jpeg");
     }
 
 
