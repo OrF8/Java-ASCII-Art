@@ -13,7 +13,7 @@ public class MathUtils {
     private static final int TWO_TO_THE_POWER_OF_4 = 16;
 
     /**
-     * Private constructor - utility class.
+     * Private constructor to prevent instantiation.
      */
     private MathUtils() {}
 
