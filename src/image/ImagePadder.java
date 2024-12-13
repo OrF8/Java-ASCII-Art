@@ -1,6 +1,6 @@
 package image;
 
-import Utils.MathUtils;
+import utils.MathUtils;
 
 import java.awt.*;
 
