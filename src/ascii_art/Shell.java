@@ -6,7 +6,17 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * TODO: Docstring
+ * The Shell class is responsible for the user interface of the ASCII Art algorithm.
+ * It is a command line interface that allows the user to control the algorithm's parameters.
+ * <p>Valid commands:</p>
+ * <li>exit - Exit the shell.</li>
+ * <li>chars - View the current character set.</li>
+ * <li>add - Add characters to the current character set.</li>
+ * <li>remove - Remove characters to the current character set.</li>
+ * <li>res - Control the picture's resolution.</li>
+ * <li>round - Change rounding method when matching an ASCII character.</li>
+ * <li>output - Choose output format: .html file or console.</li>
+ * <li>asciiArt - Run the algorithm with the current parameters.</li>
  */
 public class Shell {
 
@@ -52,7 +62,7 @@ public class Shell {
     private RoundMethod roundMethod;
 
     /**
-     * TODO: Docs
+     * An enum to represent the output method of the algorithm.
      */
     private enum OutputMethod {
         CONSOLE("console"),
@@ -60,19 +70,25 @@ public class Shell {
 
         private final String value;
 
-        // Constructor
+        /**
+         * Constructor
+         * @param value The value of the enum.
+         */
         OutputMethod(String value) {
             this.value = value;
         }
 
-        // Getter method to retrieve the value
+        /**
+         * Getter method to retrieve the value.
+         * @return The value of the enum.
+         */
         public String getValue() {
             return value;
         }
     }
 
     /**
-     * TODO: Docs
+     * An enum to represent the rounding method of the algorithm.
      */
     private enum RoundMethod {
         UP("up"),
@@ -81,19 +97,29 @@ public class Shell {
 
         private final String value;
 
-        // Constructor
+        /**
+         * Constructor
+         * @param value The value of the enum.
+         */
         RoundMethod(String value) {
             this.value = value;
         }
 
-        // Getter method to retrieve the value
+        /**
+         * Getter method to retrieve the value.
+         * @return The value of the enum.
+         */
         public String getValue() {
             return value;
         }
     }
 
     /**
-     * TODO
+     * Constructor for the Shell class.
+     * Initializes the character set with the default values.
+     * Initializes the resolution with the default value.
+     * Initializes the rounding method with the default value.
+     * Initializes the output method with the default value.
      */
     public Shell() {
         // set up default values for the algorithm
@@ -124,6 +150,8 @@ public class Shell {
      *
      * @param argument As stated above.
      * @throws CharacterSetException In case of invalid input
+     *
+     * @see Shell#removeCharsFromList(String)
      */
     private void addCharsToList(String argument) throws CharacterSetException {
         // Create a new exception to throw in case of an invalid input.
@@ -159,6 +187,8 @@ public class Shell {
      *
      * @param argument As stated above.
      * @throws CharacterSetException In case of invalid input
+     *
+     * @see Shell#addCharsToList(String)
      */
     private void removeCharsFromList(String argument) throws CharacterSetException {
         // TODO: What to do if user asks to remove a char that isn't in ASCII range? Throw Excpetion?
@@ -181,10 +211,10 @@ public class Shell {
     }
 
     /**
-     * TODO: COMPLETE
-     * @param stringArray
-     * @param command
-     * @throws CharacterSetException
+     * Implements the "add" or "remove" command on a range of characters.
+     * @param stringArray The array of strings to operate on.
+     * @param command The command to operate on the set.
+     * @throws CharacterSetException In case of invalid input.
      */
     private void commandCharactersInRange(String[] stringArray, String command) throws CharacterSetException {
         CharacterSetException characterSetException = new CharacterSetException(command);
@@ -285,9 +315,12 @@ public class Shell {
 
     }
 
-
-
-
+    /**
+     * Main method to run the shell.
+     * @param args Command line arguments.
+     *
+     * @see Shell#run(String)
+     */
     public static void main(String[] args) {
         Shell newShellSession = new Shell();
         newShellSession.run("or_is_gay");
