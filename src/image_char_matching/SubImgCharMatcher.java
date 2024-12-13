@@ -1,5 +1,7 @@
 package image_char_matching;
 
+import ascii_art.RoundMethod;
+
 import java.util.HashMap;
 
 /**
@@ -42,6 +44,43 @@ public class SubImgCharMatcher {
         // For each char in the set, check its difference from the desired brightness value.
         for (char ch : this.charSet.keySet()) {
             double diff = Math.abs(this.charSet.get(ch) - brightness);
+            if (diff < minDiff) {
+                minDiff = diff;
+                closestChar = ch;
+            } else if (diff == minDiff) {
+                /*
+                 If there are multiple characters with the same brightness,
+                 the character with the smallest ASCII value is returned.
+                 */
+                closestChar = (ch < closestChar) ? ch : closestChar;
+            }
+        }
+        return closestChar;
+    }
+
+    /**
+     * Returns the character with the closest brightness value (in ceiling or floor) to the given brightness.
+     * <p>If there are multiple characters with the same brightness,
+     * the character with the smallest ASCII value is returned.</p>
+     * @param brightness The brightness value to be matched with a character.
+     * @param roundMethod The rounding method to be used.
+     * @return The character with the closest brightness value to the given brightness.
+     */
+    public char getCharByImageBrightness(double brightness, RoundMethod roundMethod) {
+        if (roundMethod == RoundMethod.ABSOLUTE) {
+            return getCharByImageBrightness(brightness);
+        }
+        char closestChar = ' ';
+        // Set up variable to check the difference between two brightness values.
+        double minDiff = Double.MAX_VALUE;
+        // For each char in the set, check its difference from the desired brightness value.
+        for (char ch : this.charSet.keySet()) {
+            double diff;
+            if (roundMethod == RoundMethod.UP) {
+                diff = Math.ceil(this.charSet.get(ch) - brightness);
+            } else {
+                diff = Math.floor(this.charSet.get(ch) - brightness);
+            }
             if (diff < minDiff) {
                 minDiff = diff;
                 closestChar = ch;
