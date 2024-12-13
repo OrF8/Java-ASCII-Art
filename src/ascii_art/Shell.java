@@ -72,6 +72,7 @@ public class Shell {
     static final String ROUND_UP_FORMAT = "up";
     static final String ROUND_DOWN_FORMAT = "down";
     static final String ROUND_ABS_VALUE_FORMAT = "abs";
+    private static final String ROUND_ERROR = "change rounding method";
 
     // incorrect format or command requests
     private static final String INCORRECT_FORMAT = "incorrect format";
@@ -348,8 +349,9 @@ public class Shell {
      * Runs the ASCII Art algorithm on the given image.
      * @param imageName The path to the image to run the algorithm on.
      * @throws IOException In case of invalid image path.
+     * @throws CustomShellException In case of invalid input.
      */
-    private void runAsciiArtAlgorithm(String imageName) throws IOException {
+    private void runAsciiArtAlgorithm(String imageName) throws IOException, CustomShellException {
         if (this.characterSet.size() >= SUFFICIENT_CHAR_SET_SIZE){
             AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(imageName, this.characterSet,
                                                                         this.resolution, this.roundMethod);
@@ -357,6 +359,29 @@ public class Shell {
             this.userOutput.out(output); //  Display output according to current format.
         } else {
             throw new CustomShellException(INSUFFICIENT_CHARACTER_SET_SIZE);
+        }
+    }
+
+    /**
+     * Changes the rounding method when matching an ASCII character.
+     * <p>Has the following commands:</p>
+     * <li>up - Round up to the nearest character.</li>
+     * <li>down - Round down to the nearest character.</li>
+     * <li>abs - Round to the nearest character by absolute value.</li>
+     * @param args The arguments given by the user. The second argument is the rounding method.
+     * @throws CustomShellException In case of invalid rounding method.
+     */
+    private void changeRoundMethod(String[] args) throws CustomShellException {
+        CustomShellException roundMethodException = new CustomShellException(ROUND_ERROR, INCORRECT_FORMAT);
+        if (args.length >= TWO_ARGUMENTS) {
+            switch (args[1]) {
+                case ROUND_UP_FORMAT -> this.roundMethod = RoundMethod.UP;
+                case ROUND_DOWN_FORMAT -> this.roundMethod = RoundMethod.DOWN;
+                case ROUND_ABS_VALUE_FORMAT -> this.roundMethod = RoundMethod.ABSOLUTE;
+                default -> throw roundMethodException;
+            }
+        } else {
+            throw roundMethodException;
         }
     }
 
@@ -391,7 +416,7 @@ public class Shell {
                 changeOutputResolution(args);
                 break;
             case ROUND_METHOD:
-                // changeRoundMethod(args);
+                changeRoundMethod(args);
                 break;
             case OUTPUT_FORMAT:
                 changeOutputFormat(args);

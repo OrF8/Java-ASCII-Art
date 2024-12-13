@@ -21,7 +21,6 @@ public class AsciiArtAlgorithm {
     private static String prevImagePath;
     private static int prevResolution;
     private static Image prevPaddedImage;
-    private static RoundMethod prevRoundMethod;
 
     // Instance final fields.
     private final String imagePath;
