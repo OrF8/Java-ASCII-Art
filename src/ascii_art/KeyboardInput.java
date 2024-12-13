@@ -8,7 +8,7 @@ import java.util.Scanner;
 class KeyboardInput
 {
     private static KeyboardInput keyboardInputObject = null;
-    private Scanner scanner;
+    private final Scanner scanner;
     
     private KeyboardInput()
     {

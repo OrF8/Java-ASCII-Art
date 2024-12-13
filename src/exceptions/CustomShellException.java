@@ -1,15 +1,17 @@
 package exceptions;
 
 /**
- * Thrown upon invalid requests for changes in the character set.
+ * Custom exception class for the shell.
+ * Used to throw exceptions when the user inputs an invalid command.
  */
-public class CustomShellException extends RuntimeException {
+public class CustomShellException extends Exception {
 
     private static final String INVALID_OPERATION_REQUEST = "Did not %s due to %s.";
 
     /**
      * Receives a command type and creates a new exception.
      * @param commandType "add" / "remove" command.
+     * @param failureReason The reason for the failure.
      */
     public CustomShellException(String commandType, String failureReason){
         super(String.format(INVALID_OPERATION_REQUEST, commandType, failureReason));

@@ -25,6 +25,7 @@ public class AsciiArtAlgorithm {
     // Instance final fields.
     private final String imagePath;
     private final int resolution;
+    private final RoundMethod roundMethod;
 
     // Instance fields.
     private SubImgCharMatcher charMatcher;
@@ -35,8 +36,11 @@ public class AsciiArtAlgorithm {
      * @param imagePath  The imagePath to create art from.
      * @param charSet    The set of characters to create the art with.
      * @param resolution The resolution of the output ASCII art imagePath.
+     * @param roundMethod The method to round the brightness values.
      */
-    public AsciiArtAlgorithm(String imagePath, HashSet<Character> charSet, int resolution) {
+    public AsciiArtAlgorithm(
+            String imagePath, HashSet<Character> charSet,int resolution, RoundMethod roundMethod
+    ) {
         char[] charSetArray = toCharArray(charSet);
         if (!Arrays.equals(charSetArray, toCharArray(prevCharSet))) { // If the character set has changed.
             updateCharMatcherAndSet(charSet, charSetArray);
@@ -46,7 +50,7 @@ public class AsciiArtAlgorithm {
 
         this.imagePath = imagePath;
         this.resolution = resolution;
-
+        this.roundMethod = roundMethod;
     }
 
     /**
@@ -106,7 +110,7 @@ public class AsciiArtAlgorithm {
     /**
      * Creates the ASCII output from scratch.
      * This method is called when the imagePath has changed or the resolution has changed.
-     * @return A 2D character array
+     * @return A 2D <code>char</code> array
      * where each entry represents a character
      * that matches the brightness value of the entry in the original imagePath.
      */
@@ -124,7 +128,7 @@ public class AsciiArtAlgorithm {
             for (int col = 0; col < numCols; col++) {
                 double subImageBrightness = SubImageHandler.getImageBrightness(subImages[row][col]);
                 imageBrightnessValue[row][col] = subImageBrightness; // Save for future algorithm runs.
-                asciiOutput[row][col] = charMatcher.getCharByImageBrightness(subImageBrightness);
+                asciiOutput[row][col] = charMatcher.getCharByImageBrightness(subImageBrightness, roundMethod);
             }
         }
         return asciiOutput;
@@ -145,7 +149,9 @@ public class AsciiArtAlgorithm {
         // For each sub-image, get the brightness value and the corresponding character.
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
-                asciiOutput[row][col] = charMatcher.getCharByImageBrightness(imageBrightnessValue[row][col]);
+                asciiOutput[row][col] = charMatcher.getCharByImageBrightness(
+                        imageBrightnessValue[row][col], roundMethod
+                );
             }
         }
         return asciiOutput;

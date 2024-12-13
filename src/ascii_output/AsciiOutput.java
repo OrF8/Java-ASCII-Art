@@ -6,8 +6,11 @@ package ascii_output;
  * @author Dan Nirel
  */
 public interface AsciiOutput {
+
     /**
      * Output the specified 2D array of chars
+     * @param chars The 2D array of chars to output.
      */
     void out(char[][] chars);
+
 }

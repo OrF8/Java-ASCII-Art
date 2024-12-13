@@ -1,14 +1,17 @@
 package image_char_matching;
 
+import ascii_art.RoundMethod;
+
 import java.util.HashMap;
 
 /**
  * Responsible for matching an ASCII character to a sub-image with a given brightness.
- * Will be used for the ASCII-Art algorithm to replace sub-images with characters.
+ * <p>Will be used for the ASCII-Art algorithm to replace sub-images with characters.</p>
  */
 public class SubImgCharMatcher {
 
-    private static final int NUM_OF_PIXELS_IN_CONVERTED_CHARACTER = 16 * 16;
+    private static final int NUM_OF_PIXELS_IN_CONVERTED_CHARACTER = CharConverter.DEFAULT_PIXEL_RESOLUTION *
+                                                                    CharConverter.DEFAULT_PIXEL_RESOLUTION;
 
     private final HashMap<Character, Double> charSet;
 
@@ -42,6 +45,43 @@ public class SubImgCharMatcher {
         // For each char in the set, check its difference from the desired brightness value.
         for (char ch : this.charSet.keySet()) {
             double diff = Math.abs(this.charSet.get(ch) - brightness);
+            if (diff < minDiff) {
+                minDiff = diff;
+                closestChar = ch;
+            } else if (diff == minDiff) {
+                /*
+                 If there are multiple characters with the same brightness,
+                 the character with the smallest ASCII value is returned.
+                 */
+                closestChar = (ch < closestChar) ? ch : closestChar;
+            }
+        }
+        return closestChar;
+    }
+
+    /**
+     * Returns the character with the closest brightness value (in ceiling or floor) to the given brightness.
+     * <p>If there are multiple characters with the same brightness,
+     * the character with the smallest ASCII value is returned.</p>
+     * @param brightness The brightness value to be matched with a character.
+     * @param roundMethod The rounding method to be used.
+     * @return The character with the closest brightness value to the given brightness.
+     */
+    public char getCharByImageBrightness(double brightness, RoundMethod roundMethod) {
+        if (roundMethod == RoundMethod.ABSOLUTE) {
+            return getCharByImageBrightness(brightness);
+        }
+        char closestChar = ' ';
+        // Set up variable to check the difference between two brightness values.
+        double minDiff = Double.MAX_VALUE;
+        // For each char in the set, check its difference from the desired brightness value.
+        for (char ch : this.charSet.keySet()) {
+            double diff;
+            if (roundMethod == RoundMethod.UP) {
+                diff = Math.ceil(this.charSet.get(ch) - brightness);
+            } else {
+                diff = Math.floor(this.charSet.get(ch) - brightness);
+            }
             if (diff < minDiff) {
                 minDiff = diff;
                 closestChar = ch;
@@ -110,9 +150,9 @@ public class SubImgCharMatcher {
     }
 
     /**
-     * Match a given character with its brightness.
+     * Calculates the given character's brightness value.
      * @param c The character to match brightness to.
-     * @return The brightness of the character.
+     * @return The brightness value of the character.
      */
     private static double matchBrightness(char c) {
         boolean[][] convertedChar = CharConverter.convertToBoolArray(c);
@@ -125,7 +165,7 @@ public class SubImgCharMatcher {
     }
 
     /**
-     * Normalize the brightness values in a given character set.
+     * Normalizes the brightness values in a given character set.
      * Called only when all the characters in the set have an assigned brightness value.
      */
     private void normalizeBrightness() {
