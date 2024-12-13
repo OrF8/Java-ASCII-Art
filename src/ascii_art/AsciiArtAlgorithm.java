@@ -36,6 +36,7 @@ public class AsciiArtAlgorithm {
      * @param imagePath  The imagePath to create art from.
      * @param charSet    The set of characters to create the art with.
      * @param resolution The resolution of the output ASCII art imagePath.
+     * @param roundMethod The method to round the brightness values.
      */
     public AsciiArtAlgorithm(
             String imagePath, HashSet<Character> charSet,int resolution, RoundMethod roundMethod
@@ -109,7 +110,7 @@ public class AsciiArtAlgorithm {
     /**
      * Creates the ASCII output from scratch.
      * This method is called when the imagePath has changed or the resolution has changed.
-     * @return A 2D character array
+     * @return A 2D <code>char</code> array
      * where each entry represents a character
      * that matches the brightness value of the entry in the original imagePath.
      */

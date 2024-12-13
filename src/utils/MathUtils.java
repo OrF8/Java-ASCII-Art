@@ -3,7 +3,7 @@ package utils;
 /**
  * Providing math utility methods to the program.
  */
-public class MathUtils {
+public final class MathUtils {
 
     // powers of 2
     private static final int TWO_TO_THE_POWER_OF_0 = 1;

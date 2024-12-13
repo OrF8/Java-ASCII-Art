@@ -14,14 +14,16 @@ import java.util.*;
  * The Shell class is responsible for the user interface of the ASCII Art algorithm.
  * It is a command line interface that allows the user to control the algorithm's parameters.
  * <p>Valid commands:</p>
- * <li>exit - Exit the shell.</li>
- * <li>chars - View the current character set.</li>
- * <li>add - Add characters to the current character set.</li>
- * <li>remove - Remove characters to the current character set.</li>
- * <li>res - Control the picture's resolution.</li>
- * <li>round - Change rounding method when matching an ASCII character.</li>
- * <li>output - Choose output format: .html file or console.</li>
- * <li>asciiArt - Run the algorithm with the current parameters.</li>
+ * <ul>
+ *      <li>exit - Exit the shell.</li>
+ *      <li>chars - View the current character set.</li>
+ *      <li>add - Add characters to the current character set.</li>
+ *      <li>remove - Remove characters to the current character set.</li>
+ *      <li>res - Control the picture's resolution.</li>
+ *      <li>round - Change rounding method when matching an ASCII character.</li>
+ *      <li>output - Choose output format: .html file or console.</li>
+ *      <li>asciiArt - Run the algorithm with the current parameters.</li>
+ * </ul>
  */
 public class Shell {
 
@@ -43,7 +45,6 @@ public class Shell {
     private static final Character[] DEFAULT_CHARACTER_SET = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
     };
-    private static final String HTML_FILE_ENDING = ".html";
     private static final int TWO_ARGUMENTS = 2;
 
     // ASCII values
@@ -67,6 +68,7 @@ public class Shell {
 
     // "output" shell command constants
     private static final String CHANGE_OUTPUT_METHOD = "change output method";
+    private static final String OUTPUT_FILE_NAME = "out.html";
 
     // "round" shell command constants
     static final String ROUND_UP_FORMAT = "up";
@@ -78,7 +80,7 @@ public class Shell {
     private static final String INCORRECT_FORMAT = "incorrect format";
     private static final String EXECUTE_REQUEST = "execute";
     private static final String INCORRECT_COMMAND = "incorrect command";
-    public static final int SUFFICIENT_CHAR_SET_SIZE = 2;
+    private static final int SUFFICIENT_CHAR_SET_SIZE = 2;
 
     // Enum constants
     private static final String CONSOLE_FORMAT = "console";
@@ -86,8 +88,6 @@ public class Shell {
 
     // Separators
     private static final String HYPHEN_SEPARATOR = "-";
-    public static final String SLASH_SEPARATOR = "/";
-    public static final String DOT_SEPARATOR = ".";
 
 
     // private fields
@@ -97,7 +97,6 @@ public class Shell {
     private RoundMethod roundMethod;
     private int minCharsInRow;
     private int imageWidth;
-    private String fileName;
 
     /**
      * An enum to represent the output method of the algorithm.
@@ -154,11 +153,16 @@ public class Shell {
     /**
      * Adds characters to the character list.
      * Valid argument options:
-     * <li>single character - A single character to add to the list.</li>
-     * <li>all - Adds all ASCII characters from 32 to 126 to the list.</li>
-     * <li>space - Adds the character space ' ' to the list.</li>
-     * <li>character range - Adds characters from start to finish of the given range.
-     * <p>Examples: a-g or g-a</p></li>
+     * <ul>
+     *      <li>single character - A single character to add to the list.</li>
+     *      <li>all - Adds all ASCII characters from 32 to 126 to the list.</li>
+     *      <li>space - Adds the character space ' ' to the list.</li>
+     *      <li>character range - Adds characters from start to finish of the given range.
+     *          <ul>
+     *              <li>Examples: a-g or g-a</li>
+     *          </ul>
+     *      </li>
+     * </ul>
      *
      * @param args Argument array (first argument is the command, second is the character to add).
      * @throws CustomShellException In case of invalid input
@@ -191,18 +195,20 @@ public class Shell {
                 throw characterSetException;
             }
         } else { // User did not specify what to add to the set
-            throw new CustomShellException(args[0], INCORRECT_FORMAT);
+            throw characterSetException;
         }
     }
 
     /**
      * Removes characters to the character list.
      * Valid argument options:
-     * <li>single character - A single character to remove from the list.</li>
-     * <li>all - Removes all ASCII characters from 32 to 126 from the list.</li>
-     * <li>space - Removes the character space ' ' from the list.</li>
-     * <li>character range - Removes characters from start to finish of the given range.
-     * <p>Examples: a-g or g-a</p></li>
+     * <ul>
+     *      <li>single character - A single character to remove from the list.</li>
+     *      <li>all - Removes all ASCII characters from 32 to 126 from the list.</li>
+     *      <li>space - Removes the character space ' ' from the list.</li>
+     *      <li>character range - Removes characters from start to finish of the given range.
+     *      <p>Examples: a-g or g-a</p></li>
+     * </ul>
      *
      * @param args Argument array (first argument is the command, second is the character to add).
      * @throws CustomShellException In case of invalid input
@@ -210,25 +216,30 @@ public class Shell {
      * @see Shell#addCharsToList(String[])
      */
     private void removeCharsFromList(String[] args) throws CustomShellException {
-        // TODO: What to do if user asks to remove a char that isn't in ASCII range? Throw Exception?
         // Create a new exception to throw in case of an invalid input.
+        CustomShellException characterSetException = new CustomShellException(
+                REMOVE_CHARS_FROM_LIST, INCORRECT_FORMAT
+        );
+        // TODO: What to do if user asks to remove a char that isn't in ASCII range? Throw Exception?
         if (args.length >= TWO_ARGUMENTS) {
             String operation = args[1];
             if (operation.equals(SPACE_ADDITION_REQUEST)) { // Remove space from the character set
                 this.characterSet.remove(SPACE_ASCII_CODE);
-            } else if (operation.equals(REMOVE_ALL_ASCII_REQUEST)) { // Remove all ASCII characters from the set
+            } else if (operation.equals(REMOVE_ALL_ASCII_REQUEST)) {
+                // Remove all ASCII characters from the set
                 operateOnAsciiCharactersInRange(
                         FIRST_ASCII_CHARACTER, LAST_ASCII_CHARACTER, REMOVE_CHARS_FROM_LIST
                 );
             } else if (operation.length() == 1) { // Remove a single character from the set
                 this.characterSet.remove(operation.toCharArray()[0]);
-            } else if (operation.contains(HYPHEN_SEPARATOR)) { // Given range of characters to remove from the set.
+            } else if (operation.contains(HYPHEN_SEPARATOR)) {
+                // Given range of characters to remove from the set.
                 commandCharactersInRange(operation.split(HYPHEN_SEPARATOR), REMOVE_CHARS_FROM_LIST);
             } else {
-                throw new CustomShellException(REMOVE_CHARS_FROM_LIST, INCORRECT_FORMAT);
+                throw characterSetException;
             }
         } else { // User did not specify what to remove from the set
-        throw new CustomShellException(args[0], INCORRECT_FORMAT);
+        throw characterSetException;
         }
     }
 
@@ -278,7 +289,7 @@ public class Shell {
             if (command.equals(ADD_CHARS_TO_LIST)) {
                 this.characterSet.add(c); // Since this is a HashSet, will not add an existing character.
             } else {
-                this.characterSet.remove(c);
+                this.characterSet.remove(c); // Will not remove a character that is not in the set.
             }
         }
     }
@@ -286,8 +297,10 @@ public class Shell {
     /**
      * Changes the resolution of the output picture.
      * <p>Has the following set of commands:</p>
-     * <li>res up: Multiply the current resolution by 2.</li>
-     * <li>res down: Divide the current resolution by 2.</li>
+     * <ul>
+     *      <li>res up: Multiply the current resolution by 2.</li>
+     *      <li>res down: Divide the current resolution by 2.</li>
+     * </ul>
      * <pre>Default resolution is set to 2, cannot exceed certain boundaries.</pre>
      * @param args The arguments given by the user. The second argument is the operation to perform.
      * @throws CustomShellException The requested resolution change exceeds upper/lower bounds.
@@ -323,8 +336,10 @@ public class Shell {
     /**
      * Changes the ASCII-Art output format.
      * <p>Has the following commands:</p>
-     * <li>console - Prints the ASCII-Art to the standard output.</li>
-     * <li>html - Creates an html file with the ASCII-Art.</li>
+     * <ul>
+     *      <li>console - Prints the ASCII-Art to the standard output.</li>
+     *      <li>html - Creates an html file with the ASCII-Art.</li>
+     * </ul>
      * @param args The arguments given by the user. The second argument is the output format.
      * @throws CustomShellException In case of invalid output format.
      */
@@ -336,7 +351,7 @@ public class Shell {
             if (outputFormat.equals(OutputMethod.CONSOLE.getValue())) {
                 this.userOutput = new ConsoleAsciiOutput();
             } else if (outputFormat.equals(OutputMethod.HTML.getValue())) {
-                this.userOutput = new HtmlAsciiOutput(this.fileName, HTML_OUTPUT_FONT);
+                this.userOutput = new HtmlAsciiOutput(OUTPUT_FILE_NAME, HTML_OUTPUT_FONT);
             } else {
                 throw formatException;
             }
@@ -365,9 +380,11 @@ public class Shell {
     /**
      * Changes the rounding method when matching an ASCII character.
      * <p>Has the following commands:</p>
-     * <li>up - Round up to the nearest character.</li>
-     * <li>down - Round down to the nearest character.</li>
-     * <li>abs - Round to the nearest character by absolute value.</li>
+     * <ul>
+     *      <li>up - Round up to the nearest character.</li>
+     *      <li>down - Round down to the nearest character.</li>
+     *      <li>abs - Round to the nearest character by absolute value.</li>
+     * </ul>
      * @param args The arguments given by the user. The second argument is the rounding method.
      * @throws CustomShellException In case of invalid rounding method.
      */
@@ -388,21 +405,22 @@ public class Shell {
     /**
      * Handles the user's input and executes the requested commands.
      * <p>Valid commands:</p>
-     * <li>chars - View the current character set.</li>
-     * <li>add - Add characters to the current character set.</li>
-     * <li>remove - Remove characters to the current character set.</li>
-     * <li>res - Control the picture's resolution.</li>
-     * <li>round - Change rounding method when matching an ASCII character.</li>
-     * <li>output - Choose output format: .html file or console.</li>
-     * <li>asciiArt - Run the algorithm with the current parameters.</li>
+     * <ul>
+     *      <li>chars - View the current character set.</li>
+     *      <li>add - Add characters to the current character set.</li>
+     *      <li>remove - Remove characters to the current character set.</li>
+     *      <li>res - Control the picture's resolution.</li>
+     *      <li>round - Change rounding method when matching an ASCII character.</li>
+     *      <li>output - Choose output format: .html file or console.</li>
+     *      <li>asciiArt - Run the algorithm with the current parameters.</li>
+     * </ul>
      * @param args The arguments given by the user.
      * @param imageName The path to the image to run the algorithm on.
      * @throws CustomShellException In case of invalid input.
      * @throws IOException In case of invalid image path.
      */
     private void inputSwitcher(String[] args, String imageName) throws CustomShellException, IOException {
-        String command = args[0];
-        switch (command) {
+        switch (args[0]) { // Switch user's command
             case PRINT_CHARS_LIST_INPUT:
                 printCharList();
                 break;
@@ -424,62 +442,53 @@ public class Shell {
             case RUN_ALGORITHM:
                 runAsciiArtAlgorithm(imageName);
                 break;
+            case EXIT_INPUT:
+                break;
             default:
                 throw new CustomShellException(EXECUTE_REQUEST, INCORRECT_COMMAND);
         }
     }
 
     /**
-     * The main loop of the shell.
-     * @param imageName The path to the image to run the algorithm on.
-     * @throws IOException In case of invalid image path.
-     */
-    private void performShellSession(String imageName) throws IOException {
-        String input = "";
-        while (!input.equals(EXIT_INPUT)) {
-            try {
-                System.out.print(WAIT_FOR_USER_INPUT);
-                input = KeyboardInput.readLine();
-
-                String[] args = input.split(" "); // parse the command from the user
-
-                inputSwitcher(args, imageName); // handle the user's request according to the command
-            } catch (CustomShellException e) { // Catch exceptions that occurred due to invalid commands
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-
-    /**
      * Responsible for translating the commands given from the user and execute them.
      * <p>List of valid commands:</p>
-     * <li>exit - Exit the shell.</li>
-     * <li>chars - View the current character set.</li>
-     * <li>add - Add characters to the current character set.</li>
-     * <li>remove - Remove characters to the current character set.</li>
-     * <li>res - Control the picture's resolution.</li>
-     * <li>round - Change rounding method when matching an ASCII character.</li>
-     * <li>output - Choose output format: .html file or console.</li>
-     * <li>asciiArt - Run the algorithm with the current parameters.</li>
+     * <ul>
+     *      <li>exit - Exit the shell.</li>
+     *      <li>chars - View the current character set.</li>
+     *      <li>add - Add characters to the current character set.</li>
+     *      <li>remove - Remove characters to the current character set.</li>
+     *      <li>res - Control the picture's resolution.</li>
+     *      <li>round - Change rounding method when matching an ASCII character.</li>
+     *      <li>output - Choose output format: .html file or console.</li>
+     *      <li>asciiArt - Run the algorithm with the current parameters.</li>
+     * </ul>
      *
      * @param imageName Path to the image to activate the algorithm on.
      */
     public void run(String imageName) {
         try {
             Image image = new Image(imageName);
-            // TODO: Check output file name - what do they want?
-            String name = imageName.substring(imageName.lastIndexOf(SLASH_SEPARATOR) + 1,
-                                              imageName.lastIndexOf(DOT_SEPARATOR));
-            this.fileName = name + HTML_FILE_ENDING;
             // TODO: Check if we should save sizes pre or post padding
             // Save image sizes after padding
             this.imageWidth = MathUtils.closestPowerOfTwo(image.getWidth());
             this.minCharsInRow = Math.max(
                     1, this.imageWidth / MathUtils.closestPowerOfTwo(image.getHeight())
             );
-            performShellSession(imageName);
+            String input = "";
+            while (!input.equals(EXIT_INPUT)) {
+                try {
+                    System.out.print(WAIT_FOR_USER_INPUT);
+                    input = KeyboardInput.readLine();
+
+                    String[] args = input.split(" "); // parse the command from the user
+
+                    inputSwitcher(args, imageName); // handle the user's request according to the command
+                } catch (CustomShellException e) { // Catch exceptions that occurred due to invalid commands
+                    System.out.println(e.getMessage());
+                }
+            }
         } catch (IOException e) {
-            // Invalid image path will end the run() and return to main to end the session.
+            // Invalid image path, will end the run() and return to main to end the session.
             System.out.println(e.getMessage());
         }
     }
@@ -499,6 +508,5 @@ public class Shell {
             System.out.println("Can't create an ImageInputStream!");
         }
     }
-
 
 }

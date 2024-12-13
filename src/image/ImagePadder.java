@@ -5,19 +5,16 @@ import utils.MathUtils;
 import java.awt.*;
 
 /**
- * A utility class responsible for padding a given image s.t its dimensions will be powers of 2.
+ * A utility class responsible for padding a given image such that its dimensions will be powers of 2.
  */
-public class ImagePadder {
+public final class ImagePadder {
 
     private static final int TWO_TO_THE_POWER_OF_1 = 2;
 
     /**
      * A private constructor to prevent instantiation of this class.
      */
-    private ImagePadder() {
-        // This class should not be instantiated.
-    }
-
+    private ImagePadder() {}
 
     /**
      * Pads the given image with white pixels such that its dimensions will be powers of 2.

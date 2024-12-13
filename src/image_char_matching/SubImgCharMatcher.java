@@ -6,11 +6,12 @@ import java.util.HashMap;
 
 /**
  * Responsible for matching an ASCII character to a sub-image with a given brightness.
- * Will be used for the ASCII-Art algorithm to replace sub-images with characters.
+ * <p>Will be used for the ASCII-Art algorithm to replace sub-images with characters.</p>
  */
 public class SubImgCharMatcher {
 
-    private static final int NUM_OF_PIXELS_IN_CONVERTED_CHARACTER = 16 * 16;
+    private static final int NUM_OF_PIXELS_IN_CONVERTED_CHARACTER = CharConverter.DEFAULT_PIXEL_RESOLUTION *
+                                                                    CharConverter.DEFAULT_PIXEL_RESOLUTION;
 
     private final HashMap<Character, Double> charSet;
 
@@ -149,9 +150,9 @@ public class SubImgCharMatcher {
     }
 
     /**
-     * Match a given character with its brightness.
+     * Calculates the given character's brightness value.
      * @param c The character to match brightness to.
-     * @return The brightness of the character.
+     * @return The brightness value of the character.
      */
     private static double matchBrightness(char c) {
         boolean[][] convertedChar = CharConverter.convertToBoolArray(c);
@@ -164,7 +165,7 @@ public class SubImgCharMatcher {
     }
 
     /**
-     * Normalize the brightness values in a given character set.
+     * Normalizes the brightness values in a given character set.
      * Called only when all the characters in the set have an assigned brightness value.
      */
     private void normalizeBrightness() {

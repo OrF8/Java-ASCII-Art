@@ -15,12 +15,24 @@ public class CharConverter {
     private static final double X_OFFSET_FACTOR = 0.2;
     private static final double Y_OFFSET_FACTOR = 0.75;
     private static final String FONT_NAME = "Courier New";
+
+    /**
+     * The default pixel resolution for the conversion.
+     */
     public static final int DEFAULT_PIXEL_RESOLUTION = 16;
 
     /**
+     * Private constructor to prevent instantiation.
+     */
+    private CharConverter() {
+    }
+
+    /**
      * Renders a given character, according to how it looks in the font specified in the
-     * constructor, to a square black&white image (2D array of booleans),
+     * constructor, to a square black and white image (2D array of <code>boolean</code>s),
      * whose dimension in pixels is specified.
+     * @param c The character to convert.
+     * @return A 2D array of <code>boolean</code>s representing the character.
      */
     public static boolean[][] convertToBoolArray(char c) {
         BufferedImage img = getBufferedImage(c, FONT_NAME, DEFAULT_PIXEL_RESOLUTION);
