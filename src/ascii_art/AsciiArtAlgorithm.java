@@ -14,6 +14,7 @@ import java.util.HashSet;
  */
 public class AsciiArtAlgorithm {
 
+    // Static fields to store the previous values.
     private static HashSet<Character> prevCharSet;
     private static SubImgCharMatcher prevCharMatcher;
     private static double[][] imageBrightnessValue;
@@ -21,9 +22,11 @@ public class AsciiArtAlgorithm {
     private static int prevResolution;
     private static Image prevPaddedImage;
 
+    // Instance final fields.
     private final String imagePath;
     private final int resolution;
 
+    // Instance fields.
     private SubImgCharMatcher charMatcher;
 
     /**
@@ -130,7 +133,7 @@ public class AsciiArtAlgorithm {
     /**
      * Creates the ASCII output from existing brightness values.
      * This method is called when the imagePath and resolution have not changed.
-     * @return A 2D character array
+     * @return A 2D <code>char</code> array
      * where each entry represents a character
      * that matches the brightness value of the entry in the original imagePath.
      */
@@ -150,7 +153,7 @@ public class AsciiArtAlgorithm {
 
     /**
      * Runs the ASCII-ART algorithm.
-     * @return A 2D character array where each entry represents
+     * @return A 2D <code>char</code> array where each entry represents
      * a character that matches the brightness value of the entry in the original imagePath.
      * @throws IOException in case the image path is invalid.
      */
