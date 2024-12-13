@@ -28,7 +28,7 @@ Package image:
 
 Package ascii_art:
     (*) KeyboardInput: This class was given to us. No changes were made here.
-    (*) AsciiArtAlgorithm: The main algorithm that runs the entire process.
+    (*) AsciiArtAlgorithm: The algorithm that runs the entire process.
                            This class has an efficiency mechanism that allows future runs of the algorithm to
                            take less time with less calls to unnecessary methods.
                            We are saving the following static fields and behave accordingly:
@@ -43,6 +43,16 @@ Package ascii_art:
                                          if both the resolution and the image haven't changed,
                                          we save the previous subImages' brightness values and only assign
                                          each sub-image the matching ASCII character.
+    (*) Shell: A class that activates a shell for the user to interact with and control the algorithm's
+               settings. Has private fields to save the current user setting throughout the run of the shell
+               such as character set, desired resolution, output method etc.
+
+Package utils:
+    (*) MathUtils: A utility math that contains a math operation that was required in multiple packages in the
+                   program.
+
+Package exceptions: Described in Question 3.
+
 
 TODO: work on explaining relationships
 Relationships between classes:
@@ -50,6 +60,8 @@ Relationships between classes:
         sub-images and assigning each of them a character that represent them according to their brightness.
         This method has 2 efficient methods - addChar() and removeChar() which allows the algorithm to
         efficiently update the character set according to the previous run.
+    (*) Shell interacts with AsciiArtAlgorithm, allowing the user to change setting and run the algorithm
+        accordingly.
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -81,8 +93,12 @@ Relationships between classes:
 # QUESTION 3 - Usage of Java Exception mechanism in order to take care of invalid user input and printing
                error messages:
     We have created a dedicated package for Exceptions in order to keep the project structure clean and
-    maintainable. here is an explanation to all the new Exception classes:
-    (*) CharacterSetException -
+    maintainable. Since most errors were treated the same - print a message with the same format except the
+    command type and the failure reason, we decided for simplicity to settle on one Exception class -
+    CustomShellException which extends RuntimeException. This class formats the required message with a given
+    command type and failure reason. All methods that deal with user input will not directly handle the
+    exception, but instead throw it to the caller method in case of failure. All exceptions will be handled
+    inside the Shell's run() method, that prints the corresponding exception.
 
 --------------------------------------------------------------------------------------------------------------
 

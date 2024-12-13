@@ -14,7 +14,7 @@ import java.util.HashSet;
  */
 public class AsciiArtAlgorithm {
 
-    // Static fields to store the previous values.
+    // Static fields to store the current values for the next run.
     private static HashSet<Character> prevCharSet;
     private static SubImgCharMatcher prevCharMatcher;
     private static double[][] imageBrightnessValue;

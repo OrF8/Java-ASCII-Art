@@ -1,7 +1,10 @@
 package ascii_art;
 
-import exceptions.CharacterSetException;
-import exceptions.ResolutionException;
+import utils.MathUtils;
+import ascii_output.AsciiOutput;
+import ascii_output.ConsoleAsciiOutput;
+import ascii_output.HtmlAsciiOutput;
+import exceptions.CustomShellException;
 import image.Image;
 
 import java.io.IOException;
@@ -34,7 +37,6 @@ public class Shell {
     private static final String RUN_ALGORITHM = "asciiArt";
 
     // Error messages TODO: Where does this belong to?
-    private static final String INVALID_USER_INPUT_MESSAGE = "Did not execute due to incorrect command.";
     private static final String INSUFFICIENT_CHARACTER_SET_SIZE = "Did not execute. Charset is too small.";
 
     // Default values constants
@@ -43,6 +45,8 @@ public class Shell {
     private static final Character[] DEFAULT_CHARACTER_SET = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
     };
+    private static final String HTML_FILE_ENDING = ".html";
+    private static final int TWO_ARGUMENTS = 2;
 
 
     // ASCII values
@@ -54,34 +58,56 @@ public class Shell {
     private static final String SPACE_ADDITION_REQUEST = "space";
     private static final String ADD_ALL_ASCII_REQUEST = "all";
     private static final String REMOVE_ALL_ASCII_REQUEST = ADD_ALL_ASCII_REQUEST;
-    private static final String HYPHEN_SEPARATOR = "-";
     private static final int VALID_RANGE_STRING_LENGTH = 2;
 
     // "res" shell command constants
-    private static final String REQUESTED_RESOLUTION_OUT_OF_BOUNDS = "Did not change resolution due " +
-                                                                     "to exceeding boundaries.";
+    private static final String REQUESTED_RESOLUTION_CHANGE = "change resolution";
+    private static final String OUT_OF_BOUNDS = "exceeding boundaries";
     private static final int RESOLUTION_CHANGE_FACTOR = 2;
-    private static final String RESOLUTION_INVALID_FORMAT = "Did not change resolution " +
-                                                            "due to incorrect format.";
     private static final String INCREASE_RES_REQUEST = "up";
     private static final String DECREASE_RES_REQUEST = "down";
     private static final String RESOLUTION_SET_MESSAGE = "Resolution set to %d.";
+
+    // "output" shell command constants
+    private static final String CHANGE_OUTPUT_METHOD = "change output method";
+
+    // "round" shell command constants
+    private static final String ROUND_UP_FORMAT = "up";
+    private static final String ROUND_DOWN_FORMAT = "down";
+    private static final String ROUND_ABS_VALUE_FORMAT = "abs";
+
+    // incorrect format or command requests
+    private static final String INCORRECT_FORMAT = "incorrect format";
+    private static final String EXECUTE_REQUEST = "execute";
+    private static final String INCORRECT_COMMAND = "incorrect command";
+    public static final int SUFFICIENT_CHAR_SET_SIZE = 2;
+
+    // Enum constants
+    private static final String CONSOLE_FORMAT = "console";
+    private static final String HTML_FORMAT = "html";
+
+    // Separators
+    private static final String HYPHEN_SEPARATOR = "-";
+    public static final String SLASH_SEPARATOR = "/";
+    public static final String DOT_SEPARATOR = ".";
 
 
     // private fields
     private final HashSet<Character> characterSet;
     private int resolution;
-    private OutputMethod outputMethod;
+    private AsciiOutput userOutput;
     private RoundMethod roundMethod;
     private int minCharsInRow;
     private int imageWidth;
+    private String fileName;
 
     /**
      * An enum to represent the output method of the algorithm.
      */
     private enum OutputMethod {
-        CONSOLE("console"),
-        HTML("html");
+
+        CONSOLE(CONSOLE_FORMAT),
+        HTML(HTML_FORMAT);
 
         private final String value;
 
@@ -106,9 +132,9 @@ public class Shell {
      * An enum to represent the rounding method of the algorithm.
      */
     private enum RoundMethod {
-        UP("up"),
-        DOWN("down"),
-        ABSOLUTE("abs");
+        UP(ROUND_UP_FORMAT),
+        DOWN(ROUND_DOWN_FORMAT),
+        ABSOLUTE(ROUND_ABS_VALUE_FORMAT);
 
         private final String value;
 
@@ -141,7 +167,7 @@ public class Shell {
         this.characterSet = new HashSet<>(Arrays.asList(DEFAULT_CHARACTER_SET));
         this.resolution = DEFAULT_RESOLUTION_VALUE;
         this.roundMethod = RoundMethod.ABSOLUTE;
-        this.outputMethod = OutputMethod.CONSOLE;
+        this.userOutput = new ConsoleAsciiOutput();
     }
 
     /**
@@ -164,30 +190,37 @@ public class Shell {
      * <p>Examples: a-g or g-a</p></li>
      *
      * @param argument As stated above.
-     * @throws CharacterSetException In case of invalid input
+     * @throws CustomShellException In case of invalid input
      *
      * @see Shell#removeCharsFromList(String)
      */
-    private void addCharsToList(String argument) throws CharacterSetException {
+    private void addCharsToList(String[] args) throws CustomShellException {
         // Create a new exception to throw in case of an invalid input.
-        CharacterSetException characterSetException = new CharacterSetException(ADD_CHARS_TO_LIST);
-
-        if (argument.equals(SPACE_ADDITION_REQUEST)) { // Add space to the character set
-            this.characterSet.add(SPACE_ASCII_CODE);
-        } else if (argument.equals(ADD_ALL_ASCII_REQUEST)) { // Add all ASCII characters to the set
-            operateOnAsciiCharactersInRange(FIRST_ASCII_CHARACTER, LAST_ASCII_CHARACTER, ADD_CHARS_TO_LIST);
-        } else if (argument.length() == 1) { // Add a single character to the set
-            char characterValue = argument.toCharArray()[0];
-            // Add the character iff it is in the ASCII table range.
-            if (isInAsciiTable(characterValue)) {
-                this.characterSet.add(characterValue);
-            } else { // Character is not in the ASCII table, throw exception.
+        CustomShellException characterSetException = new CustomShellException(
+                ADD_CHARS_TO_LIST, INCORRECT_FORMAT
+        );
+        if (args.length >= TWO_ARGUMENTS) {
+            String operation = args[1];
+            if (operation.equals(SPACE_ADDITION_REQUEST)) { // Add space to the character set
+                this.characterSet.add(SPACE_ASCII_CODE);
+            } else if (operation.equals(ADD_ALL_ASCII_REQUEST)) { // Add all ASCII characters to the set
+                operateOnAsciiCharactersInRange(FIRST_ASCII_CHARACTER, LAST_ASCII_CHARACTER,
+                                                ADD_CHARS_TO_LIST);
+            } else if (operation.length() == 1) { // Add a single character to the set
+                char characterValue = operation.toCharArray()[0];
+                // Add the character iff it is in the ASCII table range.
+                if (isInAsciiTable(characterValue)) {
+                    this.characterSet.add(characterValue);
+                } else { // Character is not in the ASCII table, throw exception.
+                    throw characterSetException;
+                }
+            } else if (operation.contains(HYPHEN_SEPARATOR)) { // Given range of characters to add to the set.
+                commandCharactersInRange(operation.split(HYPHEN_SEPARATOR), ADD_CHARS_TO_LIST);
+            } else {
                 throw characterSetException;
             }
-        } else if (argument.contains(HYPHEN_SEPARATOR)) { // Given range of characters to add to the set.
-            commandCharactersInRange(argument.split(HYPHEN_SEPARATOR), ADD_CHARS_TO_LIST);
-        } else {
-            throw characterSetException;
+        } else { // User did not specify what to add to the set
+            throw new CustomShellException(args[0], INCORRECT_FORMAT);
         }
     }
 
@@ -201,26 +234,30 @@ public class Shell {
      * <p>Examples: a-g or g-a</p></li>
      *
      * @param argument As stated above.
-     * @throws CharacterSetException In case of invalid input
+     * @throws CustomShellException In case of invalid input
      *
      * @see Shell#addCharsToList(String)
      */
-    private void removeCharsFromList(String argument) throws CharacterSetException {
+    private void removeCharsFromList(String[] args) throws CustomShellException {
         // TODO: What to do if user asks to remove a char that isn't in ASCII range? Throw Excpetion?
         // Create a new exception to throw in case of an invalid input.
-
-        if (argument.equals(SPACE_ADDITION_REQUEST)) { // Remove space from the character set
-            this.characterSet.remove(SPACE_ASCII_CODE);
-        } else if (argument.equals(REMOVE_ALL_ASCII_REQUEST)) { // Remove all ASCII characters from the set
-            operateOnAsciiCharactersInRange(
-                    FIRST_ASCII_CHARACTER, LAST_ASCII_CHARACTER, REMOVE_CHARS_FROM_LIST
-            );
-        } else if (argument.length() == 1) { // Remove a single character from the set
-            this.characterSet.remove(argument.toCharArray()[0]);
-        } else if (argument.contains(HYPHEN_SEPARATOR)) { // Given range of characters to remove from the set.
-            commandCharactersInRange(argument.split(HYPHEN_SEPARATOR), REMOVE_CHARS_FROM_LIST);
-        } else {
-            throw new CharacterSetException(REMOVE_CHARS_FROM_LIST);
+        if (args.length >= TWO_ARGUMENTS) {
+            String operation = args[1];
+            if (operation.equals(SPACE_ADDITION_REQUEST)) { // Remove space from the character set
+                this.characterSet.remove(SPACE_ASCII_CODE);
+            } else if (operation.equals(REMOVE_ALL_ASCII_REQUEST)) { // Remove all ASCII characters from the set
+                operateOnAsciiCharactersInRange(
+                        FIRST_ASCII_CHARACTER, LAST_ASCII_CHARACTER, REMOVE_CHARS_FROM_LIST
+                );
+            } else if (operation.length() == 1) { // Remove a single character from the set
+                this.characterSet.remove(operation.toCharArray()[0]);
+            } else if (operation.contains(HYPHEN_SEPARATOR)) { // Given range of characters to remove from the set.
+                commandCharactersInRange(operation.split(HYPHEN_SEPARATOR), REMOVE_CHARS_FROM_LIST);
+            } else {
+                throw new CustomShellException(REMOVE_CHARS_FROM_LIST, INCORRECT_FORMAT);
+            }
+        } else { // User did not specify what to remove from the set
+        throw new CustomShellException(args[0], INCORRECT_FORMAT);
         }
     }
 
@@ -228,10 +265,10 @@ public class Shell {
      * Implements the "add" or "remove" command on a range of characters.
      * @param stringArray The array of strings to operate on.
      * @param command The command to operate on the set.
-     * @throws CharacterSetException In case of invalid input.
+     * @throws CustomShellException In case of invalid input.
      */
-    private void commandCharactersInRange(String[] stringArray, String command) throws CharacterSetException {
-        CharacterSetException characterSetException = new CharacterSetException(command);
+    private void commandCharactersInRange(String[] stringArray, String command) throws CustomShellException {
+        CustomShellException characterSetException = new CustomShellException(command, INCORRECT_FORMAT);
         if (stringArray.length != VALID_RANGE_STRING_LENGTH) {
             throw characterSetException;
         } else {
@@ -282,30 +319,129 @@ public class Shell {
      * <li>res down: Divide the current resolution by 2.</li>
      * <pre>Default resolution is set to 2, cannot exceed certain boundaries.</pre>
      * @param argument User's request.
-     * @throws ResolutionException The requested resolution change exceeds upper/lower bounds.
+     * @throws CustomShellException The requested resolution change exceeds upper/lower bounds.
      */
-    private void changeOutputResolution(String argument) throws ResolutionException {
-        ResolutionException resolutionBoundException = new ResolutionException(
-                REQUESTED_RESOLUTION_OUT_OF_BOUNDS
-        );
-        if (argument.equals(INCREASE_RES_REQUEST)) {
-            if (this.resolution * RESOLUTION_CHANGE_FACTOR <= this.imageWidth) {
-                this.resolution *= RESOLUTION_CHANGE_FACTOR;
-                System.out.printf((RESOLUTION_SET_MESSAGE) + "%n", this.resolution);
+    private void changeOutputResolution(String[] args) throws CustomShellException {
+        if (args.length >= TWO_ARGUMENTS) {
+            CustomShellException resolutionBoundException = new CustomShellException(
+                    REQUESTED_RESOLUTION_CHANGE, OUT_OF_BOUNDS
+            );
+            String operation = args[1];
+            if (operation.equals(INCREASE_RES_REQUEST)) {
+                if (this.resolution * RESOLUTION_CHANGE_FACTOR <= this.imageWidth) {
+                    this.resolution *= RESOLUTION_CHANGE_FACTOR;
+                    System.out.printf((RESOLUTION_SET_MESSAGE) + "%n", this.resolution);
+                } else {
+                    throw resolutionBoundException;
+                }
+            } else if (operation.equals(DECREASE_RES_REQUEST)) {
+                if (this.resolution / RESOLUTION_CHANGE_FACTOR >= this.minCharsInRow) {
+                    this.resolution /= RESOLUTION_CHANGE_FACTOR;
+                    System.out.printf((RESOLUTION_SET_MESSAGE) + "%n", this.resolution);
+                } else {
+                    throw resolutionBoundException;
+                }
             } else {
-                throw resolutionBoundException;
+                throw new CustomShellException(REQUESTED_RESOLUTION_CHANGE, INCORRECT_FORMAT);
             }
-        } else if (argument.equals(DECREASE_RES_REQUEST)) {
-            if (this.resolution / RESOLUTION_CHANGE_FACTOR >= this.minCharsInRow) {
-                this.resolution /= RESOLUTION_CHANGE_FACTOR;
-                System.out.printf((RESOLUTION_SET_MESSAGE) + "%n", this.resolution);
+        } else { // User wants to print current resolution.
+            System.out.printf((RESOLUTION_SET_MESSAGE) + "%n", this.resolution);
+        }
+    }
+
+    /**
+     * Changes the ASCII-Art output format.
+     * <p>Has the following commands:</p>
+     * <li>console - Prints the ASCII-Art to the standard output.</li>
+     * <li>html - Creates an html file with the ASCII-Art.</li>
+     * @param outputFormat The output format to change to.
+     * @throws CustomShellException In case of invalid output format.
+     */
+    private void changeOutputFormat(String[] args) throws CustomShellException{
+        CustomShellException formatException = new CustomShellException(CHANGE_OUTPUT_METHOD,
+                                                                        INCORRECT_FORMAT);
+        if (args.length >= TWO_ARGUMENTS) { // User added another request after command type, check it
+            String outputFormat = args[1];
+            if (outputFormat.equals(OutputMethod.CONSOLE.getValue())) {
+                this.userOutput = new ConsoleAsciiOutput();
+            } else if (outputFormat.equals(OutputMethod.HTML.getValue())) {
+                this.userOutput = new HtmlAsciiOutput(this.fileName, HTML_OUTPUT_FONT);
             } else {
-                throw resolutionBoundException;
+                throw formatException;
             }
         } else {
-            throw new ResolutionException(RESOLUTION_INVALID_FORMAT);
+            throw formatException;
         }
+    }
 
+    /**
+     * TODO
+     * @param imageName
+     * @throws IOException
+     */
+    private void runAsciiArtAlgorithm(String imageName) throws IOException {
+        if (this.characterSet.size() >= SUFFICIENT_CHAR_SET_SIZE){
+            AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(imageName, this.characterSet, this.resolution);
+            char[][] output = asciiArtAlgorithm.run(); // Run the algorithm.
+            userOutput.out(output); //  Display output according to current format.
+        } else {
+            throw new CustomShellException(INSUFFICIENT_CHARACTER_SET_SIZE);
+        }
+    }
+
+    /**
+     * TODO
+     * @param imageName
+     * @throws IOException
+     */
+    private void performShellSession(String imageName) throws IOException {
+        String input = "";
+        while (!input.equals(EXIT_INPUT)) {
+            try {
+                System.out.print(WAIT_FOR_USER_INPUT);
+                input = KeyboardInput.readLine();
+
+                String[] args = input.split(" "); // parse the command from the user
+
+                inputSwitcher(args, imageName); // handle the user's request according to the command
+            } catch (CustomShellException e) { // Catch exceptions that occurred due to invalid commands
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * TODO
+     * @param args
+     * @throws CustomShellException
+     */
+    private void inputSwitcher(String[] args, String imageName) throws CustomShellException, IOException {
+        String command = args[0];
+        switch (command) {
+            case PRINT_CHARS_LIST_INPUT:
+                printCharList();
+                break;
+            case ADD_CHARS_TO_LIST:
+                addCharsToList(args);
+                break;
+            case REMOVE_CHARS_FROM_LIST:
+                removeCharsFromList(args);
+                break;
+            case CHANGE_RESOLUTION:
+                changeOutputResolution(args);
+                break;
+            case ROUND_METHOD:
+                // changeRoundMethod(args);
+                break;
+            case OUTPUT_FORMAT:
+                changeOutputFormat(args);
+                break;
+            case RUN_ALGORITHM:
+                runAsciiArtAlgorithm(imageName);
+                break;
+            default:
+                throw new CustomShellException(EXECUTE_REQUEST, INCORRECT_COMMAND);
+        }
     }
 
 
@@ -326,63 +462,22 @@ public class Shell {
     public void run(String imageName) {
         try {
             Image image = new Image(imageName);
-            this.imageWidth = image.getWidth();
-            this.minCharsInRow = Math.max(1, this.imageWidth / image.getHeight());
-
-            String input = "";
-            while (!input.equals(EXIT_INPUT)) {
-                try {
-                    System.out.print(WAIT_FOR_USER_INPUT);
-                    input = KeyboardInput.readLine();
-                    // parse the command from the user
-                    String[] args = input.split(" ");
-                    String command = args[0];
-
-                    // handle the user's request according to the command
-                    switch (command) {
-                        case PRINT_CHARS_LIST_INPUT:
-                            printCharList();
-                            break;
-                        case ADD_CHARS_TO_LIST:
-                            if (args.length >= 2) {
-                                addCharsToList(args[1]);
-                            } else { // User did not specify what to add to the set
-                                throw new CharacterSetException(command);
-                            }
-                            break;
-                        case REMOVE_CHARS_FROM_LIST:
-                            if (args.length >= 2) {
-                                removeCharsFromList(args[1]);
-                            } else { // User did not specify what to remove from the set
-                                throw new CharacterSetException(command);
-                            }
-                            break;
-                        case CHANGE_RESOLUTION:
-                            if (args.length >= 2) { // User wants a specific operation on the resolution.
-                                changeOutputResolution(args[1]);
-                            } else { // User wants to print current resolution.
-                                System.out.printf((RESOLUTION_SET_MESSAGE) + "%n", this.resolution);
-                            }
-                            break;
-//                    case ROUND_METHOD:
-//                        changeRoundMethod(args[1]);
-//                        break;
-//                    case OUTPUT_FORMAT:
-//                        changeOutputFormat(args[1]);
-//                    case RUN_ALGORITHM:
-
-                    }
-                } catch (CharacterSetException | ResolutionException e) {
-                    System.out.println(e.getMessage());
-                }
-            }
+            // TODO: Check output file name - what do they want?
+            String name = imageName.substring(imageName.lastIndexOf(SLASH_SEPARATOR) + 1,
+                                              imageName.lastIndexOf(DOT_SEPARATOR));
+            this.fileName = name + HTML_FILE_ENDING;
+            // TODO: Check if we should save sizes pre or post padding
+            // Save image sizes after padding
+            this.imageWidth = MathUtils.closestPowerOfTwo(image.getWidth());
+            this.minCharsInRow = Math.max(
+                    1, this.imageWidth / MathUtils.closestPowerOfTwo(image.getHeight())
+            );
+            performShellSession(imageName);
         } catch (IOException e) {
-            // TODO: How to handle invalid image path?
+            // Invalid image path will end the run() and return to main to end the session.
             System.out.println(e.getMessage());
         }
     }
-
-
 
     /**
      * Main method to run the shell.
@@ -392,7 +487,12 @@ public class Shell {
      */
     public static void main(String[] args) {
         Shell newShellSession = new Shell();
-        newShellSession.run("C:\\Users\\noamk\\OneDrive - huji.ac.il\\University\\2nd Year\\Object Oriented Programming\\Ex3\\ASCII-Art\\examples\\cat.jpeg");
+        if (args.length > 0) {
+            newShellSession.run(args[0]);
+        } else {
+            // TODO: How to handle invalid args? should we accept more than 1 arg?
+            System.out.println("Can't create an ImageInputStream!");
+        }
     }
 
 

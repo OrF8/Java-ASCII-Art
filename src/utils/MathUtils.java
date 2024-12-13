@@ -1,4 +1,4 @@
-package Utils;
+package utils;
 
 /**
  * Providing math utility methods to the program.
