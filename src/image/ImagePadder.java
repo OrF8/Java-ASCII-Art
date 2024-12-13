@@ -1,5 +1,7 @@
 package image;
 
+import Utils.MathUtils;
+
 import java.awt.*;
 
 /**
@@ -7,11 +9,7 @@ import java.awt.*;
  */
 public class ImagePadder {
 
-    private static final int TWO_TO_THE_POWER_OF_0 = 1;
     private static final int TWO_TO_THE_POWER_OF_1 = 2;
-    private static final int TWO_TO_THE_POWER_OF_2 = 4;
-    private static final int TWO_TO_THE_POWER_OF_3 = 8;
-    private static final int TWO_TO_THE_POWER_OF_4 = 16;
 
     /**
      * A private constructor to prevent instantiation of this class.
@@ -20,27 +18,7 @@ public class ImagePadder {
         // This class should not be instantiated.
     }
 
-    /**
-     * Returns the closest power of 2 to the given number.
-     * @param n The number to find the closest power of 2 to.
-     * @return The closest power of 2 to the given number.
-     */
-    private static int closestPowerOfTwo(int n) {
-        if ((n & (n - 1)) == 0) { // If n is a power of two
-            return n;
-        }
 
-        // Find the next power of 2
-        n--; // Decrement n to handle exact powers of 2
-        n |= n >> TWO_TO_THE_POWER_OF_0;
-        n |= n >> TWO_TO_THE_POWER_OF_1;
-        n |= n >> TWO_TO_THE_POWER_OF_2;
-        n |= n >> TWO_TO_THE_POWER_OF_3;
-        n |= n >> TWO_TO_THE_POWER_OF_4;
-        n++;
-
-        return n;
-    }
 
     /**
      * Pads the given image s.t its dimensions will be powers of 2.
@@ -50,8 +28,8 @@ public class ImagePadder {
     public static Image padImage(Image image) {
         int imageHeight = image.getHeight();
         int imageWidth = image.getWidth();
-        int heightAfterPadding = closestPowerOfTwo(imageHeight);
-        int widthAfterPadding = closestPowerOfTwo(imageWidth);
+        int heightAfterPadding = MathUtils.closestPowerOfTwo(imageHeight);
+        int widthAfterPadding = MathUtils.closestPowerOfTwo(imageWidth);
         int heightDiff = heightAfterPadding - imageHeight;
         int widthDiff = widthAfterPadding - imageWidth;
 
