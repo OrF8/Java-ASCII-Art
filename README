@@ -79,8 +79,10 @@ Relationships between classes:
 --------------------------------------------------------------------------------------------------------------
 
 # QUESTION 3 - Usage of Java Exception mechanism in order to take care of invalid user input and printing
-error messages:
-    (*)
+               error messages:
+    We have created a dedicated package for Exceptions in order to keep the project structure clean and
+    maintainable. here is an explanation to all the new Exception classes:
+    (*) CharacterSetException -
 
 --------------------------------------------------------------------------------------------------------------
 
