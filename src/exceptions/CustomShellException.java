@@ -3,7 +3,7 @@ package exceptions;
 /**
  * Thrown upon invalid requests for changes in the character set.
  */
-public class CustomShellException extends RuntimeException {
+public class CustomShellException extends Exception {
 
     private static final String INVALID_OPERATION_REQUEST = "Did not %s due to %s.";
 
