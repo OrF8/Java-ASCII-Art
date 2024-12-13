@@ -9,16 +9,16 @@ Package image_char_matching:
     (*) SubImgCharMatcher: This class is responsible for matching an ASCII character to a sub-image with a
                            given brightness. It receives an array of characters and assigns each of them a
                            brightness value. According to user's request, it will return a char matching the
-                           given brightness value. This class behaves efficiently upon adding/removing chars.
-                           It will only normalize the entire character set if the added/removed character
+                           given brightness value. This class behaves efficiently upon adding/removing chars,
+                           and will only normalize the entire character set if the added/removed character
                            changes the minimum/maximum brightness value.
 
 Package image:
     (*) Image: This class was given to us. No changes were made here.
     (*) ImagePadder: This is a utility class responsible for padding a given image with white borders s.t its
-                     Dimensions will be powers of 2. Since this is a utility class it has no fields, and all
+                     dimensions will be powers of 2. Since this is a utility class it has no fields, and all
                      of its methods are static.
-                     Assumes the given image has an even width and height (as stated in the exercise
+                     Assumes the given image has an even (not odd) width and height (as stated in the exercise
                      description).
     (*) SubImageHandler: A utility class handling the dividing of an image and calculating brightness values.
                          Sub-image division - Given an image and a resolution, this class is responsible for
@@ -43,30 +43,45 @@ Package ascii_art:
                                          if both the resolution and the image haven't changed,
                                          we save the previous subImages' brightness values and only assign
                                          each sub-image the matching ASCII character.
+                           We decided not to save the entire Ascii-Art output between runs for cases in which
+                           only the output method has changed (console/html) because we do not expect the
+                           users to make these 2 consequent action - in which case it will be effective to
+                           save the previous output. It will force our algorithm to save a large size of
+                           arrays in order to implement it. For the same reason we decided to not save the
+                           previous round method, because again it will require saving the previous output in
+                           case it hasn't changed.
     (*) Shell: A class that activates a shell for the user to interact with and control the algorithm's
-               settings. Has private fields to save the current user setting throughout the run of the shell
-               such as character set, desired resolution, output method etc.
+               settings. Has private fields to save the current user settings throughout the run of the shell
+               such as character set, desired resolution, output method etc. In order to control the output
+               method we used the polymorphism of AsciiOutput interface which will be determined
+               according to user's request.
+    (*) RoundMethod: enum that stores the 3 valid round methods.
 
 Package utils:
-    (*) MathUtils: A utility math that contains a math operation that was required in multiple packages in the
-                   program.
+    (*) MathUtils: A utility math class that contains a math operation that was required in multiple packages
+                   in the program.
 
 Package exceptions: Described in Question 3.
 
+Package ascii_output: Was given to us. No changes were made here.
 
-TODO: work on explaining relationships
 Relationships between classes:
-    (*) SubImgCharMatcher is a part of the ASCII-art algorithm logic, dividing a full-size picture to
-        sub-images and assigning each of them a character that represent them according to their brightness.
-        This method has 2 efficient methods - addChar() and removeChar() which allows the algorithm to
-        efficiently update the character set according to the previous run.
+    (*) SubImgCharMatcher is a part of the ASCII-art algorithm logic, after dividing a full-size picture to
+        sub-images by using SubImgCharMatcher we assign each of sub-image a character that represent them
+        according to their brightness. This method has 2 efficient methods - addChar() and removeChar() which
+        allows the algorithm to efficiently update the character set according to the previous run.
     (*) Shell interacts with AsciiArtAlgorithm, allowing the user to change setting and run the algorithm
         accordingly.
+    (*) ImagePadder and Shell are both using the MathUtils class in order to conduct calculation related to
+        image padding.
+    (*) RoundMethod allows both SubImgCharMatcher and AsciiArtAlgorithm to recognize the valid round methods
+        that were produced by the user in Shell class.
+    (*) CustomShellException is used by Shell class to throw exceptions that were caused by invalid user input
+        while using the shell.
 
 --------------------------------------------------------------------------------------------------------------
 
 # QUESTION 2 - Details about every Java data structure we used in our code, and the reasons behind the choice:
-    TODO: Don't forget to mention time and space complexity in our answer!
     (*) Part 1.1 - ASCII Character set: We decided to use a HashMap to store the brightness value of each
                    character. The options we had were either a HashMap or a TreeMap due to the need to print
                    the characters in their ASCII order. However, the frequency of this operation is negligible
@@ -75,11 +90,11 @@ Relationships between classes:
                    process. A Hash-Map enables access to the brightness value of each character in constant
                    time (amortized). On the other hand, a TreeMap is not Hash-based, therefor accessing the
                    brightness values will be on O(log n) time, and will only make sorting the keys more
-                   efficient (which as we explained, is far less important). Space-complexity wise, a HashMap
-                   is also ideal for this situation, and will store our data on O(n) space (where n is the
-                   number of characters).
-                   In this case there were no differences between a TreeMap and a HashMap.
-                   TODO: Where did we use this ASCII character set?
+                   efficient (which as we explained, is far less important).
+
+                   Space-complexity wise, a HashMap is also ideal for this situation, and will store our data
+                   on O(n) space (where n is the number of characters). In this case there were no differences
+                   between a TreeMap and a HashMap.
 
     (*) Part 1.5 - Previous character set - Inside AsciiArtAlgorithm, we save the previous set of characters
                    in a HashSet in order to check membership in constant time (amortized) in a new run of the
@@ -90,23 +105,28 @@ Relationships between classes:
 
 --------------------------------------------------------------------------------------------------------------
 
-# QUESTION 3 - Usage of Java Exception mechanism in order to take care of invalid user input and printing
+# QUESTION 3 - Usage of Java Exception Mechanism in order to take care of invalid user input and printing
                error messages:
-    We have created a dedicated package for Exceptions in order to keep the project structure clean and
+    We have created a dedicated package for exceptions in order to keep the project structure clean and
     maintainable. Since most errors were treated the same - print a message with the same format except the
     command type and the failure reason, we decided for simplicity to settle on one Exception class -
-    CustomShellException which extends RuntimeException. This class formats the required message with a given
+    CustomShellException which extends Exception. This class formats the required message with a given
     command type and failure reason. All methods that deal with user input will not directly handle the
     exception, but instead throw it to the caller method in case of failure. All exceptions will be handled
-    inside the Shell's run() method, that prints the corresponding exception.
+    inside the Shell's run() method, that prints the corresponding exception. We added another option to give
+    the CustomShellException the entire message, in which case it will print it (instead of formatting).
 
 --------------------------------------------------------------------------------------------------------------
 
 # QUESTION 4 - API changes to the the class SubImgCharMatcher:
-    TODO: Write none if we did not change the class
-    (*)
+    (*) In order to implement round options when matching an ASCII character to a sub-image (according to user
+        input in the shell), we needed to implement another public method that receives the round method as an
+        argument, in addition to the method that does the same but only calculates according to abs value.
+        This method overloads the original one given in the API, allowing calling it without round method (and
+        activating it with absolute rounding) or with a round method (allowing each of the 3 round methods).
+        We created an enum that hold the 3 valid round methods in order to neatly control those parameters.
+
 --------------------------------------------------------------------------------------------------------------
 
 # Question 5 - API changes to the classes that we were given:
-    TODO: Write none if we did not change the class
-    (*)
+    (*) None.
