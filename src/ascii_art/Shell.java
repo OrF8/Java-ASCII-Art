@@ -35,8 +35,6 @@ public class Shell {
     private static final String ROUND_METHOD = "round";
     private static final String OUTPUT_FORMAT = "output";
     private static final String RUN_ALGORITHM = "asciiArt";
-
-    // Error messages TODO: Where does this belong to?
     private static final String INSUFFICIENT_CHARACTER_SET_SIZE = "Did not execute. Charset is too small.";
 
     // Default values constants
@@ -47,7 +45,6 @@ public class Shell {
     };
     private static final String HTML_FILE_ENDING = ".html";
     private static final int TWO_ARGUMENTS = 2;
-
 
     // ASCII values
     private static final char SPACE_ASCII_CODE = 32;
@@ -156,11 +153,11 @@ public class Shell {
     }
 
     /**
-     * Constructor for the Shell class.
-     * Initializes the character set with the default values.
-     * Initializes the resolution with the default value.
-     * Initializes the rounding method with the default value.
-     * Initializes the output method with the default value.
+     * <p>Constructor for the Shell class.</p>
+     * <p>Initializes the character set with the default values.</p>
+     * <p>Initializes the resolution with the default value.</p>
+     * <p>Initializes the rounding method with the default value.</p>
+     * <p>Initializes the output method with the default value.</p>
      */
     public Shell() {
         // set up default values for the algorithm
@@ -171,11 +168,11 @@ public class Shell {
     }
 
     /**
-     * Prints the current character list to System.out in increasing ASCII values,
+     * Prints the current character list to the standard output in increasing ASCII values,
      * seperated by commas and spaces.
      */
     private void printCharList() {
-        // turn the character set to a tree set in order to efficiently sort it
+        // turn the character set to a tree set to efficiently sort it
         TreeSet<Character> sortedCharacterSet = new TreeSet<>(this.characterSet);
         System.out.println(sortedCharacterSet); // print the characters with ", " separator
     }
@@ -189,10 +186,10 @@ public class Shell {
      * <li>character range - Adds characters from start to finish of the given range.
      * <p>Examples: a-g or g-a</p></li>
      *
-     * @param argument As stated above.
+     * @param args Argument array (first argument is the command, second is the character to add).
      * @throws CustomShellException In case of invalid input
      *
-     * @see Shell#removeCharsFromList(String)
+     * @see Shell#removeCharsFromList(String[])
      */
     private void addCharsToList(String[] args) throws CustomShellException {
         // Create a new exception to throw in case of an invalid input.
@@ -233,13 +230,13 @@ public class Shell {
      * <li>character range - Removes characters from start to finish of the given range.
      * <p>Examples: a-g or g-a</p></li>
      *
-     * @param argument As stated above.
+     * @param args Argument array (first argument is the command, second is the character to add).
      * @throws CustomShellException In case of invalid input
      *
-     * @see Shell#addCharsToList(String)
+     * @see Shell#addCharsToList(String[])
      */
     private void removeCharsFromList(String[] args) throws CustomShellException {
-        // TODO: What to do if user asks to remove a char that isn't in ASCII range? Throw Excpetion?
+        // TODO: What to do if user asks to remove a char that isn't in ASCII range? Throw Exception?
         // Create a new exception to throw in case of an invalid input.
         if (args.length >= TWO_ARGUMENTS) {
             String operation = args[1];
@@ -318,7 +315,7 @@ public class Shell {
      * <li>res up: Multiply the current resolution by 2.</li>
      * <li>res down: Divide the current resolution by 2.</li>
      * <pre>Default resolution is set to 2, cannot exceed certain boundaries.</pre>
-     * @param argument User's request.
+     * @param args The arguments given by the user. The second argument is the operation to perform.
      * @throws CustomShellException The requested resolution change exceeds upper/lower bounds.
      */
     private void changeOutputResolution(String[] args) throws CustomShellException {
@@ -344,7 +341,7 @@ public class Shell {
             } else {
                 throw new CustomShellException(REQUESTED_RESOLUTION_CHANGE, INCORRECT_FORMAT);
             }
-        } else { // User wants to print current resolution.
+        } else { // User wants to print the current resolution.
             System.out.printf((RESOLUTION_SET_MESSAGE) + "%n", this.resolution);
         }
     }
@@ -354,7 +351,7 @@ public class Shell {
      * <p>Has the following commands:</p>
      * <li>console - Prints the ASCII-Art to the standard output.</li>
      * <li>html - Creates an html file with the ASCII-Art.</li>
-     * @param outputFormat The output format to change to.
+     * @param args The arguments given by the user. The second argument is the output format.
      * @throws CustomShellException In case of invalid output format.
      */
     private void changeOutputFormat(String[] args) throws CustomShellException{
@@ -375,9 +372,9 @@ public class Shell {
     }
 
     /**
-     * TODO
-     * @param imageName
-     * @throws IOException
+     * Runs the ASCII Art algorithm on the given image.
+     * @param imageName The path to the image to run the algorithm on.
+     * @throws IOException In case of invalid image path.
      */
     private void runAsciiArtAlgorithm(String imageName) throws IOException {
         if (this.characterSet.size() >= SUFFICIENT_CHAR_SET_SIZE){
@@ -390,9 +387,9 @@ public class Shell {
     }
 
     /**
-     * TODO
-     * @param imageName
-     * @throws IOException
+     * The main loop of the shell.
+     * @param imageName The path to the image to run the algorithm on.
+     * @throws IOException In case of invalid image path.
      */
     private void performShellSession(String imageName) throws IOException {
         String input = "";
@@ -411,9 +408,19 @@ public class Shell {
     }
 
     /**
-     * TODO
-     * @param args
-     * @throws CustomShellException
+     * Handles the user's input and executes the requested commands.
+     * <p>Valid commands:</p>
+     * <li>chars - View the current character set.</li>
+     * <li>add - Add characters to the current character set.</li>
+     * <li>remove - Remove characters to the current character set.</li>
+     * <li>res - Control the picture's resolution.</li>
+     * <li>round - Change rounding method when matching an ASCII character.</li>
+     * <li>output - Choose output format: .html file or console.</li>
+     * <li>asciiArt - Run the algorithm with the current parameters.</li>
+     * @param args The arguments given by the user.
+     * @param imageName The path to the image to run the algorithm on.
+     * @throws CustomShellException In case of invalid input.
+     * @throws IOException In case of invalid image path.
      */
     private void inputSwitcher(String[] args, String imageName) throws CustomShellException, IOException {
         String command = args[0];
