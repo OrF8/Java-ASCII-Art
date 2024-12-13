@@ -36,7 +36,6 @@ public class AsciiArtAlgorithm {
     public AsciiArtAlgorithm(String imagePath, HashSet<Character> charSet, int resolution) {
         char[] charSetArray = toCharArray(charSet);
         if (!Arrays.equals(charSetArray, toCharArray(prevCharSet))) { // If the character set has changed.
-            System.out.println("Character set has changed.");
             updateCharMatcherAndSet(charSet, charSetArray);
         } else { // If the character set has not changed.
             this.charMatcher = prevCharMatcher;
@@ -153,32 +152,26 @@ public class AsciiArtAlgorithm {
      * Runs the ASCII-ART algorithm.
      * @return A 2D character array where each entry represents
      * a character that matches the brightness value of the entry in the original imagePath.
+     * @throws IOException in case the image path is invalid.
      */
-    public char[][] run() {
-
-        try {
-            char[][] asciiOutput;
-            // If this is the first run (prevImagePath is null) or the imagePath has changed.
-            if (prevImagePath == null || !prevImagePath.equals(imagePath)) {
-                prevPaddedImage = ImagePadder.padImage(new Image(imagePath));
-                asciiOutput =  createAsciiOutputFromScratch();
-            } else {
-                if (prevResolution != resolution) { // Resolution has changed, but the same image.
-                    asciiOutput = createAsciiOutputFromScratch();
-                } else { // Same image and resolution.
-                    asciiOutput = createAsciiOutputFromExistingBrightnessValues();
-                }
+    public char[][] run() throws IOException {
+        char[][] asciiOutput;
+        // If this is the first run (prevImagePath is null) or the imagePath has changed.
+        if (prevImagePath == null || !prevImagePath.equals(imagePath)) {
+            prevPaddedImage = ImagePadder.padImage(new Image(imagePath));
+            asciiOutput =  createAsciiOutputFromScratch();
+        } else {
+            if (prevResolution != resolution) { // Resolution has changed, but the same image.
+                asciiOutput = createAsciiOutputFromScratch();
+            } else { // Same image and resolution.
+                asciiOutput = createAsciiOutputFromExistingBrightnessValues();
             }
-
-            // Update the previous values to the current values.
-            prevImagePath = imagePath;
-            prevResolution = resolution;
-            return asciiOutput;
-
-        } catch (IOException e) {
-            // TODO: Handle exception.
         }
 
+        // Update the previous values to the current values.
+        prevImagePath = imagePath;
+        prevResolution = resolution;
+        return asciiOutput;
     }
 
 }
