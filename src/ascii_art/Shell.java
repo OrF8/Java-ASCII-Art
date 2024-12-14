@@ -189,7 +189,8 @@ public class Shell {
                 } else { // Character is not in the ASCII table, throw exception.
                     throw characterSetException;
                 }
-            } else if (operation.contains(HYPHEN_SEPARATOR)) { // Given range of characters to add to the set.
+            } else if (operation.contains(HYPHEN_SEPARATOR) && args[1].length() == 3) {
+                // Given range of characters to add to the set.
                 commandCharactersInRange(operation.split(HYPHEN_SEPARATOR), ADD_CHARS_TO_LIST);
             } else {
                 throw characterSetException;
@@ -232,8 +233,8 @@ public class Shell {
                 );
             } else if (operation.length() == 1) { // Remove a single character from the set
                 this.characterSet.remove(operation.toCharArray()[0]);
-            } else if (operation.contains(HYPHEN_SEPARATOR)) {
-                // Given range of characters to remove from the set.
+            } else if (operation.contains(HYPHEN_SEPARATOR) && args[1].length() == 3) {
+                // Given range of characters to add to the set.
                 commandCharactersInRange(operation.split(HYPHEN_SEPARATOR), REMOVE_CHARS_FROM_LIST);
             } else {
                 throw characterSetException;
@@ -468,7 +469,6 @@ public class Shell {
     public void run(String imageName) {
         try {
             Image image = new Image(imageName);
-            // TODO: Check if we should save sizes pre or post padding
             // Save image sizes after padding
             this.imageWidth = MathUtils.closestPowerOfTwo(image.getWidth());
             this.minCharsInRow = Math.max(
