@@ -57,6 +57,7 @@ public class Shell {
     private static final String ADD_ALL_ASCII_REQUEST = "all";
     private static final String REMOVE_ALL_ASCII_REQUEST = ADD_ALL_ASCII_REQUEST;
     private static final int VALID_RANGE_STRING_LENGTH = 2;
+    private static final int ADD_REMOVE_RANGE_LENGTH = 3;
 
     // "res" shell command constants
     private static final String REQUESTED_RESOLUTION_CHANGE = "change resolution";
@@ -189,7 +190,7 @@ public class Shell {
                 } else { // Character is not in the ASCII table, throw exception.
                     throw characterSetException;
                 }
-            } else if (operation.contains(HYPHEN_SEPARATOR) && args[1].length() == 3) {
+            } else if (operation.contains(HYPHEN_SEPARATOR) && args[1].length() == ADD_REMOVE_RANGE_LENGTH) {
                 // Given range of characters to add to the set.
                 commandCharactersInRange(operation.split(HYPHEN_SEPARATOR), ADD_CHARS_TO_LIST);
             } else {
@@ -233,7 +234,7 @@ public class Shell {
                 );
             } else if (operation.length() == 1) { // Remove a single character from the set
                 this.characterSet.remove(operation.toCharArray()[0]);
-            } else if (operation.contains(HYPHEN_SEPARATOR) && args[1].length() == 3) {
+            } else if (operation.contains(HYPHEN_SEPARATOR) && args[1].length() == ADD_REMOVE_RANGE_LENGTH) {
                 // Given range of characters to add to the set.
                 commandCharactersInRange(operation.split(HYPHEN_SEPARATOR), REMOVE_CHARS_FROM_LIST);
             } else {
