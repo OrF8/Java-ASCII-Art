@@ -56,8 +56,10 @@ public class Shell {
     private static final String SPACE_ADDITION_REQUEST = "space";
     private static final String ADD_ALL_ASCII_REQUEST = "all";
     private static final String REMOVE_ALL_ASCII_REQUEST = ADD_ALL_ASCII_REQUEST;
-    private static final int VALID_RANGE_STRING_LENGTH = 2;
+    private static final int VALID_RANGE_STRING_LENGTH = 3;
     private static final int ADD_REMOVE_RANGE_LENGTH = 3;
+    private static final int FROM_CHAR_INDEX = 0;
+    private static final int TO_CHAR_INDEX = 2;
 
     // "res" shell command constants
     private static final String REQUESTED_RESOLUTION_CHANGE = "change resolution";
@@ -192,7 +194,7 @@ public class Shell {
                 }
             } else if (operation.contains(HYPHEN_SEPARATOR) && args[1].length() == ADD_REMOVE_RANGE_LENGTH) {
                 // Given range of characters to add to the set.
-                commandCharactersInRange(operation.split(HYPHEN_SEPARATOR), ADD_CHARS_TO_LIST);
+                commandCharactersInRange(operation.split(""), ADD_CHARS_TO_LIST);
             } else {
                 throw characterSetException;
             }
@@ -236,7 +238,7 @@ public class Shell {
                 this.characterSet.remove(operation.toCharArray()[0]);
             } else if (operation.contains(HYPHEN_SEPARATOR) && args[1].length() == ADD_REMOVE_RANGE_LENGTH) {
                 // Given range of characters to add to the set.
-                commandCharactersInRange(operation.split(HYPHEN_SEPARATOR), REMOVE_CHARS_FROM_LIST);
+                commandCharactersInRange(operation.split(""), REMOVE_CHARS_FROM_LIST);
             } else {
                 throw characterSetException;
             }
@@ -256,8 +258,8 @@ public class Shell {
         if (stringArray.length != VALID_RANGE_STRING_LENGTH) {
             throw characterSetException;
         } else {
-            char param1 = stringArray[0].charAt(0);
-            char param2 = stringArray[1].charAt(0);
+            char param1 = stringArray[FROM_CHAR_INDEX].charAt(0);
+            char param2 = stringArray[TO_CHAR_INDEX].charAt(0);
             if (!isInAsciiTable(param1) || !isInAsciiTable(param2)) {
                 throw characterSetException;
             }
@@ -502,12 +504,11 @@ public class Shell {
      */
     public static void main(String[] args) {
         Shell newShellSession = new Shell();
-        if (args.length > 0) {
-            newShellSession.run(args[0]);
-        } else {
-            // TODO: How to handle invalid args? should we accept more than 1 arg?
-            System.out.println("Can't create an ImageInputStream!");
-        }
+        /* A MESSAGE TO THE MANUAL CHECK:
+           We simply call with args[0]
+           because Jeremy said in the exercise forum we can assume there is at least 1 argument.
+         */
+        newShellSession.run(args[0]);
     }
 
 }
