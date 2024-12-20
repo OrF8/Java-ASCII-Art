@@ -224,7 +224,6 @@ public class Shell {
         CustomShellException characterSetException = new CustomShellException(
                 REMOVE_CHARS_FROM_LIST, INCORRECT_FORMAT
         );
-        // TODO: What to do if user asks to remove a char that isn't in ASCII range? Throw Exception?
         if (args.length >= TWO_ARGUMENTS) {
             String operation = args[1];
             if (operation.equals(SPACE_ADDITION_REQUEST)) { // Remove space from the character set
