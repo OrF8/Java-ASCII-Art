@@ -71,7 +71,6 @@ public class Shell {
 
     // "output" shell command constants
     private static final String CHANGE_OUTPUT_METHOD = "change output method";
-    private static final String OUTPUT_FILE_NAME = "out.html";
 
     // "round" shell command constants
     static final String ROUND_UP_FORMAT = "up";
@@ -100,6 +99,7 @@ public class Shell {
     private RoundMethod roundMethod;
     private int minCharsInRow;
     private int imageWidth;
+    private String imageName;
 
     /**
      * An enum to represent the output method of the algorithm.
@@ -354,7 +354,7 @@ public class Shell {
             if (outputFormat.equals(OutputMethod.CONSOLE.getValue())) {
                 this.userOutput = new ConsoleAsciiOutput();
             } else if (outputFormat.equals(OutputMethod.HTML.getValue())) {
-                this.userOutput = new HtmlAsciiOutput(OUTPUT_FILE_NAME, HTML_OUTPUT_FONT);
+                this.userOutput = new HtmlAsciiOutput(this.imageName + "." + HTML_FORMAT, HTML_OUTPUT_FONT);
             } else {
                 throw formatException;
             }
@@ -466,11 +466,12 @@ public class Shell {
      *      <li>asciiArt - Run the algorithm with the current parameters.</li>
      * </ul>
      *
-     * @param imageName Path to the image to activate the algorithm on.
+     * @param imagePath Path to the image to activate the algorithm on.
      */
-    public void run(String imageName) {
+    public void run(String imagePath) {
         try {
-            Image image = new Image(imageName);
+            this.imageName = imagePath.substring(imagePath.lastIndexOf("\\") + 1).split("\\.")[0];
+            Image image = new Image(imagePath);
             // Save image sizes after padding
             this.imageWidth = MathUtils.closestPowerOfTwo(image.getWidth());
             this.minCharsInRow = Math.max(
@@ -484,7 +485,7 @@ public class Shell {
 
                     String[] args = input.split(" "); // parse the command from the user
 
-                    inputSwitcher(args, imageName); // handle the user's request according to the command
+                    inputSwitcher(args, imagePath); // handle the user's request according to the command
                 } catch (CustomShellException e) { // Catch exceptions that occurred due to invalid commands
                     System.out.println(e.getMessage());
                 }
