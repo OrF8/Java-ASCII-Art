@@ -1,5 +1,4 @@
 noam.kimhi,or_forshmit8
-322678947,327795464
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -117,16 +116,3 @@ Relationships between classes:
     the CustomShellException the entire message, in which case it will print it (instead of formatting).
 
 --------------------------------------------------------------------------------------------------------------
-
-# QUESTION 4 - API changes to the the class SubImgCharMatcher:
-    (*) In order to implement round options when matching an ASCII character to a sub-image (according to user
-        input in the shell), we needed to implement another public method that receives the round method as an
-        argument, in addition to the method that does the same but only calculates according to abs value.
-        This method overloads the original one given in the API, allowing calling it without round method (and
-        activating it with absolute rounding) or with a round method (allowing each of the 3 round methods).
-        We created an enum that hold the 3 valid round methods in order to neatly control those parameters.
-
---------------------------------------------------------------------------------------------------------------
-
-# Question 5 - API changes to the classes that we were given:
-    (*) None.
