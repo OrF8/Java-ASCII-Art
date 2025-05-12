@@ -6,7 +6,7 @@ The project recieved a final grade of **100**.
 # 🧩 Features
 - **Image to ASCII Conversion**: Transforms images into ASCII art using grayscale mapping.
 - **Customizable Character Sets**: Allows selection of different character sets for varying levels of detail.
-- **Scalable Output**: Adjusts the size of the output ASCII art based on user preferences.​
+- **Scalable Output**: Adjusts the size of the output ASCII art based on user preferences.
 - **Modular Design**: Structured codebase for easy maintenance and extension.
 
 # 📁 Project Structure
