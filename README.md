@@ -22,14 +22,14 @@ Java-ASCII-Art/
 # 🚀 Getting Started
 ## Prerequisites
 - Java Development Kit (JDK) 17 or higher.
-- An Integrated Development Environment (IDE) such as IntelliJ IDEA or Eclipse.
+- An Integrated Development Environment (IDE) such as IntelliJ IDEA or Eclipse (Optional).
 ## Installation
 1. Clone the repository:
    ````
    git clone https://github.com/OrF8/Java-ASCII-Art.git
    cd Java-ASCII-Art
    ````
-2. Import the project into your IDE:
+2. If using an IDE - Import the project into your IDE:
    - For IntelliJ IDEA:​
      - Open IntelliJ IDEA.
      - Select "Open" and choose the `Java-ASCII-Art` directory.
