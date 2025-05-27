@@ -42,9 +42,9 @@ Java-ASCII-Art/
    - Compile and run the `src/ascii_art/Shell.java` class to start the application.
   
 # 🖼️ Usage
-1. Place the image you want to convert into a known directory directory.
+1. Place the image you want to convert into a known directory.
 2. Run the application and provide the path to the image file as a program argument.​
-3. The application will process the image and output the ASCII art representation to the console or save it to a file, depending on the your desires.
+3. The application will process the image and output the ASCII art representation to the console or save it to a file, depending on your desires.
 
 # 📄 License
 This project is licensed under the MIT License – see the [**LICENSE**](https://github.com/OrF8/Java-ASCII-Art/blob/main/LICENSE) file for details.
