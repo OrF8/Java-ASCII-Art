@@ -1,7 +1,7 @@
 # 🎨 Java ASCII Art Generator
 This project is an ASCII art generator developed by [**Noam Kimhi**](https://github.com/noam-kimhi) and [**Or Forshmit**](https://github.com/OrF8) as part of the course [**67125 - Introduction to Object Oriented Programming**](https://shnaton.huji.ac.il/index.php/NewSyl/67125/2/2025/) at [**The Hebrew University of Jerusalem**](https://en.huji.ac.il/). \
 The application converts images into ASCII art representations using Java. \
-The project recieved a final grade of **100**.
+> 🎓 Final Grade: **100**
 
 # 🧩 Features
 - **Image to ASCII Conversion**: Transforms images into ASCII art using grayscale mapping.
