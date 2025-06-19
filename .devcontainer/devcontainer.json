@@ -12,7 +12,10 @@
         "src/utils/Welcome"
       ],
       "settings": {
-        "workbench.startupEditor": "none"
+        "workbench.startupEditor": "none",
+        "window.restoreWindows": "none",
+        "files.restoreWindows": false,
+        "files.hotExit": "off"
       }
     }
   }
