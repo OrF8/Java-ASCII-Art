@@ -43,6 +43,8 @@ To get started:
     1. Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
     2. Open the project in VS Code.
     3. Run `Dev Containers: Reopen in Container` from the command palette.
+
+This will compile the project files into `bin` directory and allow you to run the application directly from the container.
   
 ## 🖼️ Usage
 1. Place the image you want to convert into a known directory.
