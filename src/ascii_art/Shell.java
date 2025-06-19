@@ -8,6 +8,8 @@ import exceptions.CustomShellException;
 import image.Image;
 
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.*;
 
 /**
@@ -27,7 +29,14 @@ import java.util.*;
  */
 public class Shell {
 
+    // Welcome message constants
+    private static final String SHELL_WELCOM_MSG_PATH = "src/utils/Welcome";
+    private static final String READ_ERROR_MSG = "Error reading welcome message: %s.\n" +
+                                                 "Please open an issue on GitHub to report this error.";
+
     // Constants for user input
+    private static final String NO_IMAGE_ERROR = "No image path provided. " +
+                                                 "Please provide a valid image path as an argument.";
     private static final String WAIT_FOR_USER_INPUT = ">>> ";
     private static final String EXIT_INPUT = "exit";
     private static final String PRINT_CHARS_LIST_INPUT = "chars";
@@ -37,7 +46,8 @@ public class Shell {
     private static final String ROUND_METHOD = "round";
     private static final String OUTPUT_FORMAT = "output";
     private static final String RUN_ALGORITHM = "asciiArt";
-    private static final String INSUFFICIENT_CHARACTER_SET_SIZE = "Did not execute. Charset is too small.";
+    private static final String INSUFFICIENT_CHARACTER_SET_SIZE = "Did not execute. Charset is too small." +
+                                                                  " Minimum size is 2 characters.";
 
     // Default values constants
     private static final String HTML_OUTPUT_FONT = "Courier New";
@@ -135,7 +145,7 @@ public class Shell {
      * <p>Initializes the rounding method with the default value.</p>
      * <p>Initializes the output method with the default value.</p>
      */
-    public Shell() {
+    private Shell() {
         // set up default values for the algorithm
         this.characterSet = new HashSet<>(Arrays.asList(DEFAULT_CHARACTER_SET));
         this.resolution = DEFAULT_RESOLUTION_VALUE;
@@ -468,7 +478,7 @@ public class Shell {
      *
      * @param imagePath Path to the image to activate the algorithm on.
      */
-    public void run(String imagePath) {
+    private void run(String imagePath) {
         try {
             this.imageName = imagePath.substring(imagePath.lastIndexOf("\\") + 1).split("\\.")[0];
             Image image = new Image(imagePath);
@@ -497,17 +507,32 @@ public class Shell {
     }
 
     /**
+     * Prints the welcome message to the user.
+     */
+    private static void printWelcomeMessage() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(SHELL_WELCOM_MSG_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            System.out.println(String.format(READ_ERROR_MSG, e.getMessage()));
+        }
+    }
+
+    /**
      * Main method to run the shell.
      * @param args Command line arguments.
      *
      * @see Shell#run(String)
      */
     public static void main(String[] args) {
+        if (args == null || args.length == 0) {
+            System.out.println(NO_IMAGE_ERROR);
+            return; // Exit if no arguments are provided
+        }
+        printWelcomeMessage();
         Shell newShellSession = new Shell();
-        /* A MESSAGE TO THE MANUAL CHECK:
-           We simply call with args[0]
-           because Jeremy said in the exercise forum we can assume there is at least 1 argument.
-         */
         newShellSession.run(args[0]);
     }
 
