@@ -9,4 +9,4 @@ mkdir -p bin
 javac -d bin $(find src -name "*.java")
 
 echo "[INFO] Compilation complete."
-echo "Run with: java -cp bin ascii_art.Shell <path_to_your_image""
+echo "Run with: java -cp bin ascii_art.Shell <path_to_your_image>"
