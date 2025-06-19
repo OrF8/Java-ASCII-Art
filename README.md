@@ -30,7 +30,7 @@ The application converts images into ASCII art representations using Java.
      - Select "File" > "Import" > "Existing Projects into Workspace".
      - Choose the `Java-ASCII-Art` directory and click "Finish".
 3. Build and run the project:
-   - Compile and run the `src/ascii_art/Shell.java` class to start the application.
+   - Compile and run the `src/ascii_art/Shell.java` class with the path to your image to start the application.
 
 ### 📦 Using GitHub Codespaces or Dev Containers
 This project supports [**GitHub Codespaces**](https://github.com/features/codespaces) and [**VS Code Dev Containers**](https://code.visualstudio.com/docs/devcontainers/containers).  
