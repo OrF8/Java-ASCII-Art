@@ -5,11 +5,15 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "vscjava.vscode-java-pack"
+        "vscjava.vscode-java-pack",
+        "ms-vscode.live-server"
       ],
       "openFiles": [
         "src/utils/Welcome"
-      ]
+      ],
+      "settings": {
+        "workbench.startupEditor": "none"
+      }
     }
   }
 }
