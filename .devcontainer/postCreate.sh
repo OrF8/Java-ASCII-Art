@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+echo "[INFO] Installing dependencies"
+
+sudo apt-get update
+sudo apt-get install libfreetype6
+
+echo "[INFO] Installation successful"
+
 echo "[INFO] Compiling all Java source files..."
 
 mkdir -p bin
