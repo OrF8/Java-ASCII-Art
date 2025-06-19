@@ -3,8 +3,8 @@ set -e
 
 echo "[INFO] Installing dependencies"
 
-sudo apt-get update
-sudo apt-get install libfreetype6
+sudo apt-get update -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y libfreetype6 libfontconfig1
 
 echo "[INFO] Installation successful"
 
