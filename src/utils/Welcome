@@ -1,0 +1,14 @@
+Welcome to the ASCII Art Shell!
+This program converts images to ASCII art using customizable parameters.
+
+Usage:
+  exit          - Exit the shell.
+  chars         - View the current character set (default is 0-9).
+  add <arg>     - Add characters to the current character set (e.g., "all", "space", ""a", "z-d"...).
+  remove <arg>  - Remove characters from the current character set (e.g., "all", "space", "a", "z-d"...).
+  res <up|down> - Change the picture's resolution.
+  round <type>  - Change rounding method (up, down, abs).
+  output <fmt>  - Choose output format: console or html (default is console).
+  asciiArt      - Run the algorithm with the current parameters.
+
+Type a command and press Enter to begin.
