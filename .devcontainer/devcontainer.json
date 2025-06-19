@@ -6,8 +6,10 @@
     "vscode": {
       "extensions": [
         "vscjava.vscode-java-pack"
+      ],
+      "openFiles": [
+        "src/utils/Welcome"
       ]
     }
-  },
-  "postCreateCommand": "bash .devcontainer/postCreate.sh"
+  }
 }
